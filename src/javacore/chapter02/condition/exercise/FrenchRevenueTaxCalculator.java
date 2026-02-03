@@ -5,7 +5,7 @@ public class FrenchRevenueTaxCalculator {
     public static void main(String[] args) {
 
         // 5000, 15000, 50000, 125000, 200000, 250000 gross salary
-        double grossSalary = 200000;
+        final double GROSS_SALARY = 200000;
 
         // employeeType for conditions
         boolean isWorker = true;
@@ -56,9 +56,9 @@ public class FrenchRevenueTaxCalculator {
             socialContributionsPercent = 25;
 
         }
-        socialContributionsAmount = grossSalary * socialContributionsPercent / 100;
+        socialContributionsAmount = GROSS_SALARY * socialContributionsPercent / 100;
 
-        netTaxableSalaryAfterSocialContributions = grossSalary - socialContributionsAmount;
+        netTaxableSalaryAfterSocialContributions = GROSS_SALARY - socialContributionsAmount;
 
         // Deduction rule
         netTaxableSalaryDeductionAmount = netTaxableSalaryAfterSocialContributions * netTaxableSalaryDeductionPercent / 100;
