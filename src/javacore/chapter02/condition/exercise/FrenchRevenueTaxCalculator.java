@@ -5,10 +5,11 @@ public class FrenchRevenueTaxCalculator {
     public static void main(String[] args) {
 
         // 5000, 15000, 50000, 125000, 200000, 250000 gross salary
-        double grossSalary = 15000;
+        double grossSalary = 200000;
 
         // employeeType for conditions
-        String employeeType = "Worker"; // or Executive
+        boolean isWorker = true;
+
         double socialContributionsPercent = 0;
         double socialContributionsAmount = 0;
 
@@ -22,16 +23,16 @@ public class FrenchRevenueTaxCalculator {
         double netTaxableSalaryDeductionAmount = 0;
 
         // taxable percent for each bracket
-        double secondTaxBracketPercent = 11.0;
-        double thirdTaxBracketPercent = 30.0;
-        double fourthTaxBracketPercent = 41.0;
-        double fifthTaxBracketPercent = 45.0;
+        final double BRACKET_2_PERCENT = 11.0;
+        final double BRACKET_3_PERCENT = 30.0;
+        final double BRACKET_4_PERCENT = 41.0;
+        final double BRACKET_5_PERCENT = 45.0;
 
         // Upper bound of taxable brackets, I handle conditions with these.
-        int firstBracketUpperBound = 11294;
-        int secondBracketUpperBound = 28797;
-        int thirdBracketUpperBound = 82341;
-        int fourthBracketUpperBound = 177106;
+        final int BRACKET_2_MIN = 11294;
+        final int BRACKET_3_MIN = 28797;
+        final int BRACKET_4_MIN = 82341;
+        final int BRACKET_5_MIN = 177106;
 
         // taxable amount per bracket
         double secondTaxBracket = 0;
@@ -46,87 +47,80 @@ public class FrenchRevenueTaxCalculator {
         double percentTaxAmount = 0;
 
         // socialContributions rule
-        if (employeeType.equals("Worker")) {
+        if (isWorker) {
 
             socialContributionsPercent = 23;
-            socialContributionsAmount = grossSalary * socialContributionsPercent / 100;
-            netTaxableSalaryAfterSocialContributions = grossSalary - socialContributionsAmount;
-
-
-        } else if (employeeType.equals("Executive")) {
-
-            socialContributionsPercent = 25;
-            socialContributionsAmount = grossSalary * socialContributionsPercent / 100;
-            netTaxableSalaryAfterSocialContributions = grossSalary - socialContributionsAmount;
-
-        }
-
-        // Deduction rule
-        if (netTaxableSalaryAfterSocialContributions >= 100000) {
-
-            netTaxableSalaryDeductionAmount = 10000;
-            netTaxableSalaryAfterDeduction = netTaxableSalaryAfterSocialContributions - netTaxableSalaryDeductionAmount;
 
         } else {
 
-            netTaxableSalaryDeductionAmount = netTaxableSalaryAfterSocialContributions * netTaxableSalaryDeductionPercent / 100;
-            netTaxableSalaryAfterDeduction = netTaxableSalaryAfterSocialContributions - netTaxableSalaryDeductionAmount;
+            socialContributionsPercent = 25;
 
         }
+        socialContributionsAmount = grossSalary * socialContributionsPercent / 100;
 
-        // copy to keep the base value intact
+        netTaxableSalaryAfterSocialContributions = grossSalary - socialContributionsAmount;
+
+        // Deduction rule
+        netTaxableSalaryDeductionAmount = netTaxableSalaryAfterSocialContributions * netTaxableSalaryDeductionPercent / 100;
+
+        if (netTaxableSalaryDeductionAmount >= 10000) {
+
+            netTaxableSalaryDeductionAmount = 10000;
+
+        }
+        netTaxableSalaryAfterDeduction = netTaxableSalaryAfterSocialContributions - netTaxableSalaryDeductionAmount;
+
+        // copy value
         double remainingNetTaxableSalary = netTaxableSalaryAfterDeduction;
 
-        if (remainingNetTaxableSalary > fourthBracketUpperBound) {
+        if (remainingNetTaxableSalary > BRACKET_5_MIN) {
 
             // taxable amount on fifth bracket
-            double fifthBracketAmount;
-            fifthBracketAmount = netTaxableSalaryAfterDeduction - fourthBracketUpperBound;
+            double fifthBracketAmount = netTaxableSalaryAfterDeduction - BRACKET_5_MIN;
 
             // tax amount
-            fifthTaxBracket = fifthBracketAmount * fifthTaxBracketPercent / 100;
+            fifthTaxBracket = fifthBracketAmount * BRACKET_5_PERCENT / 100;
 
             // subtract remaining salary with the amount taxed in this bracket to go in the next if (cascade)
-            remainingNetTaxableSalary -= fifthBracketAmount;
+            remainingNetTaxableSalary = BRACKET_5_MIN;
 
         }
 
-        if (remainingNetTaxableSalary > thirdBracketUpperBound) {
+        if (remainingNetTaxableSalary > BRACKET_4_MIN) {
 
-            double fourthBracketAmount;
-            fourthBracketAmount = remainingNetTaxableSalary - thirdBracketUpperBound;
+            double fourthBracketAmount = remainingNetTaxableSalary - BRACKET_4_MIN;
 
-            fourthTaxBracket = fourthBracketAmount * fourthTaxBracketPercent / 100;
+            fourthTaxBracket = fourthBracketAmount * BRACKET_4_PERCENT / 100;
 
-            remainingNetTaxableSalary -= fourthBracketAmount;
-
-        }
-
-        if (remainingNetTaxableSalary > secondBracketUpperBound) {
-
-            double thirdBracketAmount;
-            thirdBracketAmount = remainingNetTaxableSalary - secondBracketUpperBound;
-
-            thirdTaxBracket = thirdBracketAmount * thirdTaxBracketPercent / 100;
-
-            remainingNetTaxableSalary -= thirdBracketAmount;
+            remainingNetTaxableSalary = BRACKET_4_MIN;
 
         }
 
-        if (remainingNetTaxableSalary > firstBracketUpperBound) {
+        if (remainingNetTaxableSalary > BRACKET_3_MIN) {
 
-            double secondBracketAmount;
-            secondBracketAmount = remainingNetTaxableSalary - firstBracketUpperBound;
+            double thirdBracketAmount = remainingNetTaxableSalary - BRACKET_3_MIN;;
 
-            secondTaxBracket = secondBracketAmount * secondTaxBracketPercent / 100;
+            thirdTaxBracket = thirdBracketAmount * BRACKET_3_PERCENT / 100;
+
+            remainingNetTaxableSalary = BRACKET_3_MIN;
 
         }
 
-        if (netTaxableSalaryAfterDeduction > firstBracketUpperBound) {
+        if (remainingNetTaxableSalary > BRACKET_2_MIN) {
+
+            double secondBracketAmount = remainingNetTaxableSalary - BRACKET_2_MIN;
+
+            secondTaxBracket = secondBracketAmount * BRACKET_2_PERCENT / 100;
+
+        }
+
+        if (netTaxableSalaryAfterDeduction > BRACKET_2_MIN) {
 
             // either that or totalTaxAmount += taxBracket for each if
             totalTaxAmount = fifthTaxBracket + fourthTaxBracket + thirdTaxBracket + secondTaxBracket;
+
             percentTaxAmount = totalTaxAmount * 100 / netTaxableSalaryAfterDeduction;
+
             System.out.printf("With a net taxable salary after deduction of %.2f euros, the total amount of income tax is : %.2f euros.%nThe percentage of this income tax is %.2f%%.%n", netTaxableSalaryAfterDeduction, totalTaxAmount, percentTaxAmount);
 
         } else {
