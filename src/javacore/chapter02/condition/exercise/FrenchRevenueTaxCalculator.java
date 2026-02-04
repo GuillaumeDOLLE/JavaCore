@@ -5,7 +5,7 @@ public class FrenchRevenueTaxCalculator {
     public static void main(String[] args) {
 
         // 5000, 15000, 50000, 125000, 200000, 250000 gross salary
-        final double GROSS_SALARY = 200000;
+        final double GROSS_ANNUAL_SALARY = 200000;
 
         // employeeType for conditions
         boolean isWorker = true;
@@ -21,20 +21,24 @@ public class FrenchRevenueTaxCalculator {
         double netTaxableSalaryAfterDeduction;
         double netTaxableSalaryDeductionPercent = 10;
         double netTaxableSalaryDeductionAmount = 0;
+        final double MAX_DEDUCTION_AMOUNT = 10000;
 
         // taxable percent for each bracket
+        final double BRACKET_1_PERCENT = 0.0;
         final double BRACKET_2_PERCENT = 11.0;
         final double BRACKET_3_PERCENT = 30.0;
         final double BRACKET_4_PERCENT = 41.0;
         final double BRACKET_5_PERCENT = 45.0;
 
         // Upper bound of taxable brackets, I handle conditions with these.
+        final int BRACKET_1_MIN = 0;
         final int BRACKET_2_MIN = 11294;
         final int BRACKET_3_MIN = 28797;
         final int BRACKET_4_MIN = 82341;
         final int BRACKET_5_MIN = 177106;
 
         // taxable amount per bracket
+        double firstTaxBracket = 0;
         double secondTaxBracket = 0;
         double thirdTaxBracket = 0;
         double fourthTaxBracket = 0;
@@ -48,24 +52,20 @@ public class FrenchRevenueTaxCalculator {
 
         // socialContributions rule
         if (isWorker) {
-
             socialContributionsPercent = 23;
-
         } else {
-
             socialContributionsPercent = 25;
-
         }
-        socialContributionsAmount = GROSS_SALARY * socialContributionsPercent / 100;
+        socialContributionsAmount = GROSS_ANNUAL_SALARY * socialContributionsPercent / 100;
 
-        netTaxableSalaryAfterSocialContributions = GROSS_SALARY - socialContributionsAmount;
+        netTaxableSalaryAfterSocialContributions = GROSS_ANNUAL_SALARY - socialContributionsAmount;
 
         // Deduction rule
         netTaxableSalaryDeductionAmount = netTaxableSalaryAfterSocialContributions * netTaxableSalaryDeductionPercent / 100;
 
-        if (netTaxableSalaryDeductionAmount >= 10000) {
+        if (netTaxableSalaryDeductionAmount >= MAX_DEDUCTION_AMOUNT) {
 
-            netTaxableSalaryDeductionAmount = 10000;
+            netTaxableSalaryDeductionAmount = MAX_DEDUCTION_AMOUNT;
 
         }
         netTaxableSalaryAfterDeduction = netTaxableSalaryAfterSocialContributions - netTaxableSalaryDeductionAmount;
@@ -89,9 +89,7 @@ public class FrenchRevenueTaxCalculator {
         if (remainingNetTaxableSalary > BRACKET_4_MIN) {
 
             double fourthBracketAmount = remainingNetTaxableSalary - BRACKET_4_MIN;
-
             fourthTaxBracket = fourthBracketAmount * BRACKET_4_PERCENT / 100;
-
             remainingNetTaxableSalary = BRACKET_4_MIN;
 
         }
@@ -99,9 +97,7 @@ public class FrenchRevenueTaxCalculator {
         if (remainingNetTaxableSalary > BRACKET_3_MIN) {
 
             double thirdBracketAmount = remainingNetTaxableSalary - BRACKET_3_MIN;;
-
             thirdTaxBracket = thirdBracketAmount * BRACKET_3_PERCENT / 100;
-
             remainingNetTaxableSalary = BRACKET_3_MIN;
 
         }
@@ -109,25 +105,23 @@ public class FrenchRevenueTaxCalculator {
         if (remainingNetTaxableSalary > BRACKET_2_MIN) {
 
             double secondBracketAmount = remainingNetTaxableSalary - BRACKET_2_MIN;
-
             secondTaxBracket = secondBracketAmount * BRACKET_2_PERCENT / 100;
+            remainingNetTaxableSalary = BRACKET_2_MIN;
 
         }
 
-        if (netTaxableSalaryAfterDeduction > BRACKET_2_MIN) {
+        if (remainingNetTaxableSalary > BRACKET_1_MIN) {
+
+            double firstBracketAmount = remainingNetTaxableSalary - BRACKET_1_MIN;
+            firstTaxBracket = firstBracketAmount * BRACKET_1_PERCENT / 100;
+            remainingNetTaxableSalary = BRACKET_1_MIN;
+
+        }
 
             // either that or totalTaxAmount += taxBracket for each if
-            totalTaxAmount = fifthTaxBracket + fourthTaxBracket + thirdTaxBracket + secondTaxBracket;
-
+            totalTaxAmount = fifthTaxBracket + fourthTaxBracket + thirdTaxBracket + secondTaxBracket + firstTaxBracket;
             percentTaxAmount = totalTaxAmount * 100 / netTaxableSalaryAfterDeduction;
-
             System.out.printf("With a net taxable salary after deduction of %.2f euros, the total amount of income tax is : %.2f euros.%nThe percentage of this income tax is %.2f%%.%n", netTaxableSalaryAfterDeduction, totalTaxAmount, percentTaxAmount);
-
-        } else {
-
-            System.out.printf("With a salary of %.2f euros, you have no taxes to pay.%n", netTaxableSalaryAfterDeduction);
-
-        }
 
     }
 
