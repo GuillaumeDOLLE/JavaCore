@@ -33,7 +33,7 @@ public class ObfuscatedCodeV1 {
             totalPrice = totalPrice - (distance * deductionRate);
         }
 
-        System.out.printf("Total price per %.3f km : " + totalPrice + "€", distance); // Prix d'un trajet avec tel véhicule
+        System.out.printf("Total price per %.3f km : " + totalPrice + "€", distance);
 
     }
 
