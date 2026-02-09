@@ -5,24 +5,24 @@ public class CoinChangerV2 {
     public static void main(String[] args) {
 
         // variables for conditions & calculations
-        final int FIFTY_EUROS = 50;
-        final int TWENTY_EUROS = 20;
-        final int TEN_EUROS = 10;
-        final int TWO_EUROS = 2;
-        final int ONE_EURO = 1;
+        final int NOTES_EUROS_FIFTY = 50;
+        final int NOTES_EUROS_TWENTY = 20;
+        final int NOTES_EUROS_TEN = 10;
+        final int COINS_EUROS_TWO = 2;
+        final int COINS_EUROS_ONE = 1;
 
-        int totalBill = 11;
+        int totalBill = 50;
 
-        int amountPaid = 50;
+        int amountPaid = 190;
 
         // For the v2, these variables become the stock
         // For the purpose of the exercise, I add some stock, I will modify the stock when the program is good to run
         // to test multiple behaviors
-        int stockOfFiftyEuroNotes = 1;
-        int stockOfTwentyEuroNotes = 1;
-        int stockOfTenEuroNotes = 2;
+        int stockOfFiftyEuroNotes = 3;
+        int stockOfTwentyEuroNotes = 0;
+        int stockOfTenEuroNotes = 3;
         int stockOfTwoEuroCoins = 4;
-        int stockOfOneEuroCoins = 7;
+        int stockOfOneEuroCoins = 3;
 
         // required notes to complete the change
         int requiredFiftyEuroNotes = 0;
@@ -31,23 +31,13 @@ public class CoinChangerV2 {
         int requiredTwoEuroCoins = 0;
         int requiredOneEuroCoins = 0;
 
-        // given notes & coins
-        int givenFiftyEuroNotes = 0;
-        int givenTwentyEuroNotes = 0;
-        int givenTenEuroNotes = 0;
-        int givenTwoEuroCoins = 0;
-        int givenOneEuroCoins = 0;
-
         // V2 variables for conditions | All stocks
-        int maxAmountChange =
-            (stockOfFiftyEuroNotes * FIFTY_EUROS) +
-            (stockOfTwentyEuroNotes * TWENTY_EUROS) +
-            (stockOfTenEuroNotes * TEN_EUROS) +
-            (stockOfTwoEuroCoins * TWO_EUROS) +
-            (stockOfOneEuroCoins * ONE_EURO);
-
-        boolean insufficientChange;
-        boolean insufficientDenominations;
+        int maxAmountAvailable = // maxAmountAvailable
+            (stockOfFiftyEuroNotes * NOTES_EUROS_FIFTY) +
+            (stockOfTwentyEuroNotes * NOTES_EUROS_TWENTY) +
+            (stockOfTenEuroNotes * NOTES_EUROS_TEN) +
+            (stockOfTwoEuroCoins * COINS_EUROS_TWO) +
+            (stockOfOneEuroCoins * COINS_EUROS_ONE);
 
         // change due by the machine to the client
         int amountChange = amountPaid - totalBill;
@@ -62,346 +52,70 @@ public class CoinChangerV2 {
             System.out.printf("There is no change, have a good day. :)%n");
         }
 
-        if (totalBill > amountPaid) {
+        else if (totalBill > amountPaid) {
             System.out.printf("You're short, I still need %d euros please.%n", amountDue);
         }
 
         // If there is due change to give back to the client
-        if (totalBill < amountPaid) {
+        else {
 
             // Does the machine have enough denominations ?
-            if (maxAmountChange < remainingAmountChange) { // No
-
-                insufficientChange = true;
+            if (maxAmountAvailable < remainingAmountChange) { // No
+                
                 System.out.println("Sorry, I do not have the change for that.");
 
             } else { // Yes
-                // I start with the highest note which is fifty in our case
-                if (remainingAmountChange >= FIFTY_EUROS) {
+                // How much fifty euro notes are required ?
+                requiredFiftyEuroNotes = remainingAmountChange / NOTES_EUROS_FIFTY;
+                // Does the machine have enough stock ?
+                if (requiredFiftyEuroNotes > stockOfFiftyEuroNotes) {
+                    // Gives full stock
+                    requiredFiftyEuroNotes = stockOfFiftyEuroNotes;
+                }
+                // Remaining is the amount minus what's given
+                remainingAmountChange -= (NOTES_EUROS_FIFTY * requiredFiftyEuroNotes);
+                // stock of fifty is the base amount minus what's given
+                stockOfFiftyEuroNotes -= requiredFiftyEuroNotes;
 
-                    // if stock of 50 is higher or equal than 1
-                    if (stockOfFiftyEuroNotes >= 1) {
+                requiredTwentyEuroNotes = remainingAmountChange / NOTES_EUROS_TWENTY;
+                if (requiredTwentyEuroNotes > stockOfTwentyEuroNotes) {
 
-                        // I divide the amount change by the note to get the number of this note type the machine will try to give back
-                        // It is an int
-                        requiredFiftyEuroNotes = remainingAmountChange / FIFTY_EUROS;
-
-                        // is there enough in stock ?
-                        if (stockOfFiftyEuroNotes >= requiredFiftyEuroNotes) { // Yes
-                            // Machine gives the required notes
-                            givenFiftyEuroNotes = requiredFiftyEuroNotes;
-                            // Remaining amount change is reduced by the given notes
-                            remainingAmountChange %= FIFTY_EUROS;
-
-
-                        } else { // No
-                            // Machine gives what's left in stock
-                            givenFiftyEuroNotes = stockOfFiftyEuroNotes;
-                            // Remaining amount change is reduced by what's left in stock
-                            remainingAmountChange -= (FIFTY_EUROS * stockOfFiftyEuroNotes);
-
-                        }
-                        // The stock is modified
-                        stockOfFiftyEuroNotes -= givenFiftyEuroNotes;
-
-                    }
-
-                    if (stockOfTwentyEuroNotes >= 1) {
-
-                        requiredTwentyEuroNotes = remainingAmountChange / TWENTY_EUROS;
-
-                        if (stockOfTwentyEuroNotes >= requiredTwentyEuroNotes) {
-
-                            givenTwentyEuroNotes = requiredTwentyEuroNotes;
-                            remainingAmountChange %= TWENTY_EUROS;
-
-                        } else {
-                            givenTwentyEuroNotes = stockOfTwentyEuroNotes;
-                            remainingAmountChange -= (TWENTY_EUROS * stockOfTwentyEuroNotes);
-
-                        }
-
-                        stockOfTwentyEuroNotes -= givenTwentyEuroNotes;
-
-                    }
-
-                    if (stockOfTenEuroNotes >= 1) {
-
-                        requiredTenEuroNotes = remainingAmountChange / TEN_EUROS;
-
-                        if (stockOfTenEuroNotes >= requiredTenEuroNotes) {
-
-                            givenTenEuroNotes = requiredTenEuroNotes;
-                            remainingAmountChange %= TEN_EUROS;
-
-                        } else {
-                            givenTenEuroNotes = stockOfTenEuroNotes;
-                            remainingAmountChange -= (TEN_EUROS * stockOfTenEuroNotes);
-                        }
-
-                        stockOfTenEuroNotes -= givenTenEuroNotes;
-
-                    }
-
-                    if (stockOfTwoEuroCoins >= 1) {
-
-                        requiredTwoEuroCoins = remainingAmountChange / TWO_EUROS;
-
-                        if (stockOfTwoEuroCoins >= requiredTwoEuroCoins) {
-
-                            givenTwoEuroCoins = requiredTwoEuroCoins;
-                            remainingAmountChange %= TWO_EUROS;
-
-                        } else {
-                            givenTwoEuroCoins = stockOfTwoEuroCoins;
-                            remainingAmountChange -= (TWO_EUROS * stockOfTwoEuroCoins);
-                        }
-
-                        stockOfTwoEuroCoins -= givenTwoEuroCoins;
-
-                    }
-
-                    if (stockOfOneEuroCoins >= 1) {
-
-                        requiredOneEuroCoins = remainingAmountChange / ONE_EURO;
-
-                        if (stockOfOneEuroCoins >= requiredOneEuroCoins) {
-
-                            givenOneEuroCoins = requiredOneEuroCoins;
-                            remainingAmountChange %= ONE_EURO;
-
-                        } else {
-                            givenOneEuroCoins = stockOfOneEuroCoins;
-                            remainingAmountChange -= (ONE_EURO * stockOfOneEuroCoins);
-                        }
-
-                        stockOfOneEuroCoins -= givenOneEuroCoins;
-
-                    } else {
-
-                        System.out.println(insufficientDenominationsMessage);
-
-                    }
+                    requiredTwentyEuroNotes = stockOfTwentyEuroNotes;
 
                 }
-
-                if (remainingAmountChange >= TWENTY_EUROS) {
-
-                    if (stockOfTwentyEuroNotes >= 1) {
-
-                        requiredTwentyEuroNotes = remainingAmountChange / TWENTY_EUROS;
-
-                        if (stockOfTwentyEuroNotes >= requiredTwentyEuroNotes) {
-
-                            givenTwentyEuroNotes = requiredTwentyEuroNotes;
-                            remainingAmountChange %= TWENTY_EUROS;
-
-                        } else {
-
-                            givenTwentyEuroNotes = stockOfTwentyEuroNotes;
-                            remainingAmountChange -= (TWENTY_EUROS * stockOfTwentyEuroNotes);
-
-                        }
-
-                        stockOfTwentyEuroNotes -= givenTwentyEuroNotes;
-
-                    }
-
-                    if (stockOfTenEuroNotes >= 1) {
-
-                        requiredTenEuroNotes = remainingAmountChange / TEN_EUROS;
-
-                        if (stockOfTenEuroNotes >= requiredTenEuroNotes) {
-
-                            givenTenEuroNotes = requiredTenEuroNotes;
-                            remainingAmountChange %= TEN_EUROS;
-
-                        } else {
-
-                            givenTenEuroNotes = stockOfTenEuroNotes;
-                            remainingAmountChange -= (TEN_EUROS * stockOfTenEuroNotes);
-
-                        }
-
-                        stockOfTenEuroNotes -= givenTenEuroNotes;
-
-                    }
-
-                    if (stockOfTwoEuroCoins >= 1) {
-
-                        requiredTwoEuroCoins = remainingAmountChange / TWO_EUROS;
-
-                        if (stockOfTwoEuroCoins >= requiredTwoEuroCoins) {
-
-                            givenTwoEuroCoins = requiredTwoEuroCoins;
-                            remainingAmountChange %= TWO_EUROS;
+                remainingAmountChange -= (NOTES_EUROS_TWENTY * requiredTwentyEuroNotes);
+                stockOfTwentyEuroNotes -= requiredTwentyEuroNotes;
 
 
-                        } else {
+                requiredTenEuroNotes = remainingAmountChange / NOTES_EUROS_TEN;
+                if (requiredTenEuroNotes > stockOfTenEuroNotes) {
 
-                            givenTwoEuroCoins = stockOfTwoEuroCoins;
-                            remainingAmountChange -= (TWO_EUROS * stockOfTwoEuroCoins);
-
-                        }
-
-                        stockOfTwoEuroCoins -= givenTwoEuroCoins;
-
-                    }
-
-                    if (stockOfOneEuroCoins >= 1) {
-
-                        requiredOneEuroCoins = remainingAmountChange / ONE_EURO;
-
-                        if (stockOfOneEuroCoins >= requiredOneEuroCoins) {
-
-                            givenOneEuroCoins = requiredOneEuroCoins;
-                            remainingAmountChange %= ONE_EURO;
-
-                        } else {
-                            givenOneEuroCoins = stockOfOneEuroCoins;
-                            remainingAmountChange -= (ONE_EURO * stockOfOneEuroCoins);
-                        }
-
-                        stockOfOneEuroCoins -= givenOneEuroCoins;
-
-                    } else {
-
-                        System.out.println(insufficientDenominationsMessage);
-
-                    }
+                    requiredTenEuroNotes = stockOfTenEuroNotes;
 
                 }
+                remainingAmountChange -= (NOTES_EUROS_TEN * requiredTenEuroNotes);
+                stockOfTenEuroNotes -= requiredTenEuroNotes;
 
-                if (remainingAmountChange >= TEN_EUROS) {
+                requiredTwoEuroCoins = remainingAmountChange / COINS_EUROS_TWO;
+                if (requiredTwoEuroCoins > stockOfTwoEuroCoins) {
 
-                    if (stockOfTenEuroNotes >= 1) {
+                    requiredTwoEuroCoins = stockOfTwoEuroCoins;
 
-                        requiredTenEuroNotes = remainingAmountChange / TEN_EUROS;
-
-                        if (stockOfTenEuroNotes >= requiredTenEuroNotes) {
-
-                            givenTenEuroNotes = requiredTenEuroNotes;
-                            remainingAmountChange %= TEN_EUROS;
-
-                        } else {
-                            givenTenEuroNotes = stockOfTenEuroNotes;
-                            remainingAmountChange -= (TEN_EUROS * stockOfTenEuroNotes);
-                        }
-
-                        stockOfTenEuroNotes -= givenTenEuroNotes;
-
-                    }
-
-                    if (stockOfTwoEuroCoins >= 1) {
-
-                        requiredTwoEuroCoins = remainingAmountChange / TWO_EUROS;
-
-                        if (stockOfTwoEuroCoins >= requiredTwoEuroCoins) {
-
-                            givenTwoEuroCoins = requiredTwoEuroCoins;
-                            remainingAmountChange %= TWO_EUROS;
-
-                        } else {
-                            givenTwoEuroCoins = stockOfTwoEuroCoins;
-                            remainingAmountChange -= (TWO_EUROS * stockOfTwoEuroCoins);
-                        }
-
-                        stockOfTwoEuroCoins -= givenTwoEuroCoins;
-                    }
-
-                    if (stockOfOneEuroCoins >= 1) {
-
-                        requiredOneEuroCoins = remainingAmountChange / ONE_EURO;
-
-                        if (stockOfOneEuroCoins >= requiredOneEuroCoins) {
-
-                            givenOneEuroCoins = requiredOneEuroCoins;
-                            remainingAmountChange %= ONE_EURO;
-
-                        } else {
-                            givenOneEuroCoins = stockOfOneEuroCoins;
-                            remainingAmountChange -= (ONE_EURO * stockOfOneEuroCoins);
-                        }
-
-                        stockOfOneEuroCoins -= givenOneEuroCoins;
-
-                    } else {
-
-                        System.out.println(insufficientDenominationsMessage);
-
-                    }
 
                 }
+                remainingAmountChange -= (COINS_EUROS_TWO * requiredTwoEuroCoins);
+                stockOfTwoEuroCoins -= requiredTwoEuroCoins;
 
-                if (remainingAmountChange >= TWO_EUROS) {
+                requiredOneEuroCoins = remainingAmountChange / COINS_EUROS_ONE;
+                if (requiredOneEuroCoins > stockOfOneEuroCoins) {
 
-                    if (stockOfTwoEuroCoins >= 1) {
+                    requiredOneEuroCoins = stockOfOneEuroCoins;
 
-                        requiredTwoEuroCoins = remainingAmountChange / TWO_EUROS;
-
-                        if (stockOfTwoEuroCoins >= requiredTwoEuroCoins) {
-
-                            givenTwoEuroCoins = requiredTwoEuroCoins;
-                            remainingAmountChange %= TWO_EUROS;
-
-                        } else {
-                            givenTwoEuroCoins = stockOfTwoEuroCoins;
-                            remainingAmountChange -= (TWO_EUROS * stockOfTwoEuroCoins);
-                        }
-
-                        stockOfTwoEuroCoins -= givenTwoEuroCoins;
-
-                    }
-
-                    if (stockOfOneEuroCoins >= 1) {
-
-                        requiredOneEuroCoins = remainingAmountChange / ONE_EURO;
-
-                        if (stockOfOneEuroCoins >= requiredOneEuroCoins) {
-
-                            givenOneEuroCoins = requiredOneEuroCoins;
-                            remainingAmountChange %= ONE_EURO;
-
-                        } else {
-                            givenOneEuroCoins = stockOfOneEuroCoins;
-                            remainingAmountChange -= (ONE_EURO * stockOfOneEuroCoins);
-                        }
-
-                        stockOfOneEuroCoins -= givenOneEuroCoins;
-
-                    } else {
-
-                        System.out.println(insufficientDenominationsMessage);
-
-                    }
+                    System.out.println(insufficientDenominationsMessage);
 
                 }
-
-                if (remainingAmountChange >= ONE_EURO) {
-
-                    if (stockOfOneEuroCoins >= 1) {
-
-                        requiredOneEuroCoins = remainingAmountChange / ONE_EURO;
-
-                        if (stockOfOneEuroCoins >= requiredOneEuroCoins) {
-
-                            givenOneEuroCoins = requiredOneEuroCoins;
-                            remainingAmountChange %= ONE_EURO;
-
-                        } else {
-                            givenOneEuroCoins = stockOfOneEuroCoins;
-                            remainingAmountChange -= (ONE_EURO * stockOfOneEuroCoins);
-                        }
-
-                        stockOfOneEuroCoins -= givenOneEuroCoins;
-
-                    } else {
-
-                        System.out.println(insufficientDenominationsMessage);
-
-                    }
-
-                }
+                remainingAmountChange -= (COINS_EUROS_ONE * requiredOneEuroCoins);
+                stockOfOneEuroCoins -= requiredOneEuroCoins;
 
                 System.out.printf("The total amount change is %d euros.%nHere is your change : %n" +
                         "50 euro notes = %d%n" +
@@ -417,11 +131,11 @@ public class CoinChangerV2 {
                         "- 2 euro coins = %d%n" +
                         "- 1 euro coins = %d%n",
                         amountChange,
-                        givenFiftyEuroNotes,
-                        givenTwentyEuroNotes,
-                        givenTenEuroNotes,
-                        givenTwoEuroCoins,
-                        givenOneEuroCoins,
+                        requiredFiftyEuroNotes,
+                        requiredTwentyEuroNotes,
+                        requiredTenEuroNotes,
+                        requiredTwoEuroCoins,
+                        requiredOneEuroCoins,
                         remainingAmountChange,
                         stockOfFiftyEuroNotes,
                         stockOfTwentyEuroNotes,
