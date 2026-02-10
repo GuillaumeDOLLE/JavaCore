@@ -21,9 +21,9 @@ public class AgeValidation {
          * Fin d'un code que nous ne comprenons pas, mais dont nous pouvons utiliser les variables !
          */
 
-        int userBirthDay = 1; // < 10, 10, > 10
-        int userBirthMonth = 1; // < 2, 2, > 2
-        int userBirthYear = 2009; // < 2008, 2008, > 2008
+        int userBirthDay = 11; // < 10, 10, > 10
+        int userBirthMonth = 5; // < 2, 2, > 2
+        int userBirthYear = 2007; // < 2008, 2008, > 2008
 
         if ((currentYear - userBirthYear > 18) || (currentYear - userBirthYear == 18) && (userBirthMonth < currentMonth || (userBirthMonth == currentMonth && userBirthDay <= currentDay))) {
             System.out.println("You are an adult.");
@@ -32,7 +32,7 @@ public class AgeValidation {
             System.out.println("You are a minor.");
         }
 
-        // Nested if
+        // Nested if - adult
         if (currentYear - userBirthYear > 18) {
             System.out.println("You are an adult.");
         }
@@ -54,6 +54,30 @@ public class AgeValidation {
         }
         else {
             System.out.println("You are a minor.");
+        }
+
+        // Nested if - minor
+        if (currentYear - userBirthYear < 18) {
+            System.out.println("You are a minor.");
+        }
+        else if (currentYear - userBirthYear == 18) {
+            if (userBirthMonth > currentMonth) {
+                System.out.println("You are a minor.");
+            }
+            else if (userBirthMonth == currentMonth) {
+                if (userBirthDay > currentDay) {
+                    System.out.println("You are a minor.");
+                }
+                else {
+                    System.out.println("You are an adult.");
+                }
+            }
+            else {
+                System.out.println("You are an adult.");
+            }
+        }
+        else {
+            System.out.println("You are an adult.");
         }
     }
 
