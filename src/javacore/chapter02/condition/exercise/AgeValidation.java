@@ -25,10 +25,6 @@ public class AgeValidation {
         int userBirthMonth = 1; // < 2, 2, > 2
         int userBirthYear = 2009; // < 2008, 2008, > 2008
 
-        // 30 < 10, 12 < 2, 2026 - 2008 = 18
-
-
-
         if ((currentYear - userBirthYear > 18) || (currentYear - userBirthYear == 18) && (userBirthMonth < currentMonth || (userBirthMonth == currentMonth && userBirthDay <= currentDay))) {
             System.out.println("You are an adult.");
         }
