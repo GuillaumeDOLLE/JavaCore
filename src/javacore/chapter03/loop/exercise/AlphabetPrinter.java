@@ -6,8 +6,13 @@ public class AlphabetPrinter {
 
         char letter = 'A';
 
+        // 122 is the 'z' char unicode
         while (letter <= 122) {
-            System.out.printf(letter + " ");
+
+            // 97 is the 'a' char unicode
+            if (letter >= 97) {
+                System.out.printf(letter + " ");
+            }
             letter++;
         }
 
