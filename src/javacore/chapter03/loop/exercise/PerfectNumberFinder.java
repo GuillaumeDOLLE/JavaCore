@@ -4,7 +4,7 @@ public class PerfectNumberFinder {
 
     public static void main(String[] args) {
 
-        int start = 1;
+        int start = 2;
         int end = 100000;
         int foundPerfectNumber = 0;
 
@@ -13,13 +13,19 @@ public class PerfectNumberFinder {
             // addition of all divisor for the currentNumber
             int sumDivisors = 0;
 
-            for (int divisor = 1 ; divisor < currentNumber ; divisor++) {
+            boolean isPerfectNumber = true;
+
+            for (int divisor = 1 ; divisor < currentNumber && sumDivisors <= currentNumber ; divisor++) {
                 if (currentNumber % divisor == 0) {
                     sumDivisors += divisor;
                 }
             }
 
-            if (sumDivisors == currentNumber) {
+            if (sumDivisors != currentNumber) {
+                isPerfectNumber = false;
+            }
+
+            if (isPerfectNumber) {
                 foundPerfectNumber++;
                 System.out.printf("%d is a perfect number.%n", currentNumber);
             }
