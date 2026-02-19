@@ -13,19 +13,14 @@ public class PerfectNumberFinder {
             // addition of all divisor for the currentNumber
             int sumDivisors = 0;
 
-            boolean isPerfectNumber = true;
-
+            // in the condition of the loop, I check if sum is already higher so there is no point to continue
             for (int divisor = 1 ; divisor < currentNumber && sumDivisors <= currentNumber ; divisor++) {
                 if (currentNumber % divisor == 0) {
                     sumDivisors += divisor;
                 }
             }
 
-            if (sumDivisors != currentNumber) {
-                isPerfectNumber = false;
-            }
-
-            if (isPerfectNumber) {
+            if (sumDivisors == currentNumber) {
                 foundPerfectNumber++;
                 System.out.printf("%d is a perfect number.%n", currentNumber);
             }
