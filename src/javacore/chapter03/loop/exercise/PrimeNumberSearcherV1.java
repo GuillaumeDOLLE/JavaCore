@@ -4,47 +4,60 @@ public class PrimeNumberSearcherV1 {
 
     public static void main(String[] args) {
 
-//        int maxNumber = 100;
-//        int countPrimeNumber = 0;
-//
-//        // loop through all numbers from 1 to 100
-//        for (int currentNumber = 1 ; currentNumber <= maxNumber ; currentNumber++) {
-//            System.out.println("current number : " + currentNumber);
-//
-//            // int divisor;
-//            // for (divisor = 2 ; divisor < currentNumber && currentNumber % divisor != 0 ; divisor++);
-//
-//            int divisor = 2;
-//            // loop to search for divisible numbers that will leave 0 and inferior to our currentNumber
-//            while (divisor < currentNumber && currentNumber % divisor != 0) {
-//                divisor++;
-//            }
-//
-//            // check prime
-//            if (divisor == currentNumber) {
-//                countPrimeNumber += 1;
-//                System.out.printf("%d is a prime number.%n", currentNumber);
-//            }
-//
-//        }
-//        System.out.printf("There is %d prime numbers between 1 and 100.%n", countPrimeNumber);
+        int limitNumber = 100;
+        int foundPrimeNumber = 0;
 
-        int countPrimeNumber = 0;
-        int countNumbers = 0;
-        int currentNumber = 1;
-        while (countPrimeNumber < 50) {
-            int divisor = 2;
-            countNumbers += 1;
-            while (divisor < currentNumber && currentNumber % divisor != 0) {
-                divisor++;
+
+        // loop through all numbers from 1 to 100
+        for (int currentNumber = 2 ; currentNumber <= limitNumber ; currentNumber++) {
+            System.out.println("current number : " + currentNumber);
+
+            // Assuming it is prime
+            boolean isPrimeNumber = true;
+
+            for (int divisor = 2 ; divisor < currentNumber ; divisor++){
+                if (currentNumber % divisor == 0) {
+                    // If a divisor else than 1 or self : not prime
+                    isPrimeNumber = false;
+                    // There is no need for more loop turns if a divisor is found
+                    break;
+                }
             }
-            if (divisor == currentNumber) {
-                countPrimeNumber += 1;
+
+            if (isPrimeNumber) {
+                foundPrimeNumber += 1;
                 System.out.printf("%d is a prime number.%n", currentNumber);
             }
-            currentNumber++;
+
         }
-        System.out.printf("There is %d numbers that have been analysed to get the 50 first prime numbers.%n", countNumbers);
+        System.out.printf("There is %d prime numbers between 1 and 100.%n", foundPrimeNumber);
+
+
+        // --------------------------- BONUS 1 -------------------------------
+
+//        int foundPrimeNumber = 0;
+//        int totalAnalysedNumbers = 0;
+//        int currentNumber = 2;
+//
+//        while (foundPrimeNumber < 50) {
+//
+//            boolean isPrimeNumber = true;
+//
+//            totalAnalysedNumbers += 1;
+//
+//            for (int divisor = 2 ; divisor < currentNumber ; divisor++) {
+//                if (currentNumber % divisor == 0) {
+//                    isPrimeNumber = false;
+//                    break;
+//                }
+//            }
+//            if (isPrimeNumber) {
+//                foundPrimeNumber += 1;
+//                System.out.printf("%d is a prime number.%n", currentNumber);
+//            }
+//            currentNumber++;
+//        }
+//        System.out.printf("There is %d numbers that have been analysed to get the 50 first prime numbers.%n", totalAnalysedNumbers);
 
     }
 
