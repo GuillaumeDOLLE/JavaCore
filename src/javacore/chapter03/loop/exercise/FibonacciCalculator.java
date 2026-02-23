@@ -12,7 +12,7 @@ public class FibonacciCalculator {
         System.out.println("The term F(0) of the Fibonacci sequence is : " + FIRST_TERM);
         System.out.println("The term F(1) of the Fibonacci sequence is : " + SECOND_TERM);
 
-        // copy F(0) & F(1) to find F(2)
+        // fibonacci suit init values for the 3rd term
         BigDecimal previousTerm = FIRST_TERM;
         BigDecimal currentTerm = SECOND_TERM;
 
