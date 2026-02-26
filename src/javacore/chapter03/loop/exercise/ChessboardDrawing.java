@@ -7,26 +7,26 @@ public class ChessboardDrawing {
         int chessboardSize = 5;
 
         // rows
-        for (int count = 0 ; count < chessboardSize ; count++) {
+        for (int row = 0 ; row < chessboardSize ; row++) {
             System.out.println();
             // columns
-            if (count % 2 == 0) {
-                for (int c = 0 ; c < 5 ; c++ ) {
-                    if ( c % 2 == 0) {
-                        System.out.printf("# ");
+            if (row % 2 == 0) {
+                for (int column = 0 ; column < 5 ; column++ ) {
+                    if ( column % 2 == 0) {
+                        System.out.print("# ");
                     }
                     else {
-                        System.out.printf(". ");
+                        System.out.print(". ");
                     }
                 }
             }
             else {
-                for (int c = 0 ; c < 5 ; c++ ) {
-                    if ( c % 2 == 0) {
-                        System.out.printf(". ");
+                for (int column = 0 ; column < 5 ; column++ ) {
+                    if ( column % 2 == 0) {
+                        System.out.print(". ");
                     }
                     else {
-                        System.out.printf("# ");
+                        System.out.print("# ");
                     }
                 }
             }
