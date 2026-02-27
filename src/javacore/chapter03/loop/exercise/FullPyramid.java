@@ -7,7 +7,6 @@ public class FullPyramid {
         int numberOfRows = 12;
 
         for (int currentRow = 1; currentRow <= numberOfRows ; currentRow++) {
-            System.out.println();
 
             for (int numberOfSpace = numberOfRows - currentRow ; numberOfSpace > 0 ; numberOfSpace--) {
                 System.out.print(" ");
@@ -15,6 +14,7 @@ public class FullPyramid {
             for (int numberOfAsterisk = 1 ; numberOfAsterisk <= 2 * currentRow - 1; numberOfAsterisk++) {
                 System.out.print("*");
             }
+            System.out.println();
         }
 
     }
