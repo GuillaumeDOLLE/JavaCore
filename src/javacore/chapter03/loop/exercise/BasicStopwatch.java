@@ -4,6 +4,9 @@ public class BasicStopwatch {
 
     public static void main(String[] args) throws InterruptedException {
 
+        final int SECONDS_PER_MINUTE = 60;
+        final int MINUTES_PER_HOUR = 60;
+
         int i = 0;
         int seconds = 0;
         int minutes = 0;
@@ -19,16 +22,15 @@ public class BasicStopwatch {
              * Effectue une "pause" de 1000 millisecondes / 1 seconde
              */
             Thread.sleep(1000);
-            System.out.println("1 seconde s'est écoulée");
 
             seconds++;
-            if (seconds == 60) {
+            if (seconds >= SECONDS_PER_MINUTE) {
                 minutes++;
                 seconds = 0;
-            }
-            if (minutes == 60) {
-                hours++;
-                minutes = 0;
+                if (minutes >= MINUTES_PER_HOUR) {
+                    hours++;
+                    minutes = 0;
+                }
             }
 
             String displaySeconds = seconds < 10 ? "0" + seconds : "" + seconds;
