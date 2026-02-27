@@ -10,25 +10,8 @@ public class ChessboardDrawing {
         for (int row = 0 ; row < chessboardSize ; row++) {
             System.out.println();
             // columns
-            if (row % 2 == 0) {
-                for (int column = 0 ; column < 5 ; column++ ) {
-                    if ( column % 2 == 0) {
-                        System.out.print("# ");
-                    }
-                    else {
-                        System.out.print(". ");
-                    }
-                }
-            }
-            else {
-                for (int column = 0 ; column < 5 ; column++ ) {
-                    if ( column % 2 == 0) {
-                        System.out.print(". ");
-                    }
-                    else {
-                        System.out.print("# ");
-                    }
-                }
+            for (int column = 0 ; column < chessboardSize ; column++) {
+                System.out.print((row + column) % 2 == 0 ? "# " : ". ");
             }
 
         }
