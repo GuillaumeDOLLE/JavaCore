@@ -25,24 +25,16 @@ public class FrenchRevenueTaxCalculatorFunctionRefactor {
 
     static double lastBracketTaxAmount;
 
-    public static int socialContributionsRule(boolean isWorker) {
+    public static int getSocialContributionRateByStatus(boolean isWorker) {
         return isWorker ? 23 : 25;
     }
 
-    public static double getSocialContributionAmount(double salary, double socialContributionsPercent, boolean isWorker) {
-        return salary * socialContributionsRule(isWorker) / 100;
-    }
-
-    public static double getNetTaxableSalaryAfterSocialContributions(double salary, double socialContributions) {
-        return salary - socialContributions;
+    public static double getSocialContributionAmount(double salary, int socialContributionRate) {
+        return salary * socialContributionRate / 100;
     }
 
     public static double getDeductionAmount(double salary, double deductionPercent) {
         return salary >= MAX_DEDUCTION_AMOUNT ? MAX_DEDUCTION_AMOUNT : salary * deductionPercent / 100;
-    }
-
-    public static double getNetTaxableSalaryAfterDeduction(double salary, double deductionAmount) {
-        return salary - deductionAmount;
     }
 
     public static double getTaxBracketAmount(double remainingSalary, double minBracketAmount, double bracketPercentTax) {
@@ -53,10 +45,6 @@ public class FrenchRevenueTaxCalculatorFunctionRefactor {
             return minBracketAmount;
         }
         return remainingSalary;
-    }
-
-    public static void getTotalTaxAmount(double fifthTaxBracket, double fourthTaxBracket, double thirdTaxBracket, double secondTaxBracket, double firstTaxBracket) {
-        totalTaxAmount = fifthTaxBracket + fourthTaxBracket + thirdTaxBracket + secondTaxBracket + firstTaxBracket;
     }
 
     public static void getPercentTaxAmount(double netTaxableSalaryAfterDeduction) {
@@ -91,13 +79,15 @@ public class FrenchRevenueTaxCalculatorFunctionRefactor {
         double fifthTaxBracket = 0;
 
         // socialContributions rule
-        socialContributionsAmount = getSocialContributionAmount(GROSS_ANNUAL_SALARY, socialContributionsPercent, isWorker);
+        int socialContributionRate = getSocialContributionRateByStatus(isWorker);
 
-        netTaxableSalaryAfterSocialContributions = getNetTaxableSalaryAfterSocialContributions(GROSS_ANNUAL_SALARY, socialContributionsAmount);
+        socialContributionsAmount = getSocialContributionAmount(GROSS_ANNUAL_SALARY, socialContributionRate);
+
+        netTaxableSalaryAfterSocialContributions = GROSS_ANNUAL_SALARY - socialContributionsAmount;
 
         netTaxableSalaryDeductionAmount = getDeductionAmount(netTaxableSalaryAfterSocialContributions, netTaxableSalaryDeductionPercent);
 
-        netTaxableSalaryAfterDeduction = getNetTaxableSalaryAfterDeduction(netTaxableSalaryAfterSocialContributions, netTaxableSalaryDeductionAmount);
+        netTaxableSalaryAfterDeduction = netTaxableSalaryAfterSocialContributions - netTaxableSalaryDeductionAmount;
 
         // copy value
         double remainingNetTaxableSalary = netTaxableSalaryAfterDeduction;
@@ -117,7 +107,7 @@ public class FrenchRevenueTaxCalculatorFunctionRefactor {
         getTaxBracketAmount(remainingNetTaxableSalary, BRACKET_1_MIN, BRACKET_1_PERCENT);
         firstTaxBracket = lastBracketTaxAmount;
 
-        getTotalTaxAmount(fifthTaxBracket, fourthTaxBracket, thirdTaxBracket, secondTaxBracket, firstTaxBracket);
+        totalTaxAmount = fifthTaxBracket + fourthTaxBracket + thirdTaxBracket + secondTaxBracket + firstTaxBracket;
         getPercentTaxAmount(netTaxableSalaryAfterDeduction);
 
         System.out.printf("With a net taxable salary after deduction of %.2f euros, the total amount of income tax is : %.2f euros.%nThe percentage of this income tax is %.2f%%.%n", netTaxableSalaryAfterDeduction, totalTaxAmount, percentTaxAmount);
