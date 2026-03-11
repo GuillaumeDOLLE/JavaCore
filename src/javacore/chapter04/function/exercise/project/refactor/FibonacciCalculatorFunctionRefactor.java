@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public class FibonacciCalculatorFunctionRefactor {
 
-    public static BigDecimal EVEN_DIVISOR = new BigDecimal("2");
+    public static final BigDecimal EVEN_DIVISOR = new BigDecimal("2");
 
     public static BigDecimal computeNextTerm(BigDecimal previousTerm, BigDecimal currentTerm) {
         return previousTerm.add(currentTerm);
