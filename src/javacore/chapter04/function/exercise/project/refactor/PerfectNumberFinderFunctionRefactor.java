@@ -2,20 +2,16 @@ package javacore.chapter04.function.exercise.project.refactor;
 
 public class PerfectNumberFinderFunctionRefactor {
 
-    public static void displayPerfectNumber(int cPotentialPerfectNumber) {
-        System.out.printf("%d is a perfect number.%n", cPotentialPerfectNumber);
-    }
-
-    public static boolean isPerfectNumber(int cPotentialPerfectNumber) {
+    public static boolean isPerfectNumber(int potentialPerfectNumber) {
         int sumDivisors = 0;
 
-        for (int PotentialDivisor = 1; PotentialDivisor < cPotentialPerfectNumber && sumDivisors <= cPotentialPerfectNumber; PotentialDivisor++) {
-            if (cPotentialPerfectNumber % PotentialDivisor == 0) {
-                sumDivisors += PotentialDivisor;
+        for (int potentialDivisor = 1; potentialDivisor < potentialPerfectNumber && sumDivisors <= potentialPerfectNumber; potentialDivisor++) {
+            if (potentialPerfectNumber % potentialDivisor == 0) {
+                sumDivisors += potentialDivisor;
             }
         }
 
-        return sumDivisors == cPotentialPerfectNumber;
+        return sumDivisors == potentialPerfectNumber;
     }
 
     public static void main(String[] args) {
@@ -27,7 +23,7 @@ public class PerfectNumberFinderFunctionRefactor {
         for (int cPotentialPerfectNumber = start; cPotentialPerfectNumber <= end; cPotentialPerfectNumber++) {
             if (isPerfectNumber(cPotentialPerfectNumber)) {
                 foundPerfectNumber++;
-                displayPerfectNumber(cPotentialPerfectNumber);
+                System.out.printf("%d is a perfect number.%n", cPotentialPerfectNumber);
             }
         }
 

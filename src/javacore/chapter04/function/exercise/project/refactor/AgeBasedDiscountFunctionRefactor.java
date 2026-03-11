@@ -16,17 +16,13 @@ public class AgeBasedDiscountFunctionRefactor {
 
         double price = calcPrice(age, basePrice);
 
-        displayPriceMessage(age, price);
+        System.out.println("Client age : " + age + " -> ticket price : " + price + " euros.");
     }
 
     public static double calcPrice(int age, double basePrice) {
         if (age <= 25) return basePrice * 0.75; // -25%
         if (age >= 65) return basePrice * 0.25; // -75%
         return basePrice;
-    }
-
-    public static void displayPriceMessage(int age, double price) {
-        System.out.println("Client age : " + age + " -> ticket price : " + price + " euros."); // Less precise than og to not have conditions
     }
 
 }

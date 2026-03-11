@@ -4,17 +4,19 @@ public class ArmstrongNumbersFunctionRefactor {
 
 
 
-    public static int countDigits(int number, int countDigits) {
+    public static int countDigits(int number) {
+        int countDigits = 0;
         for (int tempCopyNumber = number ; tempCopyNumber > 0 ; countDigits++) {
             tempCopyNumber /= 10;
         }
         return countDigits;
     }
 
-    public static int browseDigit(int number, int countDigits, int sumArmstrong) {
+    public static int computeArmstrong(int number, int power) {
+        int sumArmstrong = 0;
         for (int tempCopyNumber = number ; tempCopyNumber > 0 ; tempCopyNumber /= 10 ) {
             int digit = tempCopyNumber % 10;
-            sumArmstrong += (int) Math.pow(digit, countDigits);
+            sumArmstrong += (int) Math.pow(digit, power);
         }
         return sumArmstrong;
     }
@@ -31,10 +33,10 @@ public class ArmstrongNumbersFunctionRefactor {
             int countDigits = 0;
 
             // Count digits loop
-            countDigits += countDigits(cPotentialArmstrongNumber, countDigits);
+            countDigits += countDigits(cPotentialArmstrongNumber);
 
-            // To browse each digit
-            sumArmstrong += browseDigit(cPotentialArmstrongNumber, countDigits, sumArmstrong);
+            // To browse each digit to compute armstrong
+            sumArmstrong += computeArmstrong(cPotentialArmstrongNumber, countDigits);
 
             if (sumArmstrong == cPotentialArmstrongNumber) {
                 countArmstrongNumber++;

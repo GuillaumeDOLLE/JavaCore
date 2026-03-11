@@ -9,43 +9,45 @@ public class SalaryForecastFunctionRefactor {
 
         // travail 38.5h / sem => 7.7h / j
         float dailyRate = hourlyRate * 7.7F;
-        displaySalaryForecast("Le salaire brut journalier de notre cher dev cadre francais est de : ", dailyRate);
+        System.out.println("Le salaire brut journalier de notre cher dev cadre francais est de : " + dailyRate + " euros.\n---------------------------------");
 
         // salaire hebdo brut
         float weeklyRate = dailyRate * 5;
-        displaySalaryForecast("Le salaire brut hebdomadaire de notre cher dev cadre francais est de : ", weeklyRate);
+        System.out.println("Le salaire brut hebdomadaire de notre cher dev cadre francais est de : " + weeklyRate + " euros.\n---------------------------------");
 
         // 1 mois de salaire brut : 4 semaines
         float monthlyGrossSalary = weeklyRate * 4;
-        displaySalaryForecast("Le salaire brut mensuel de notre cher dev cadre francais est de : ", monthlyGrossSalary);
+        System.out.println("Le salaire brut mensuel de notre cher dev cadre francais est de : " + monthlyGrossSalary + " euros.\n---------------------------------");
 
         // salaire annuel brut
         float annualGrossSalary = monthlyGrossSalary * 12;
-        displaySalaryForecast("Le salaire brut annuel de notre cher dev cadre francais est de : ", annualGrossSalary);
+        System.out.println("Le salaire brut annuel de notre cher dev cadre francais est de : " + annualGrossSalary + " euros.\n---------------------------------");
 
         // 25% de cotisations sociales
         float socialContributionsRate = 0.75F;
         // 10.5% d'impots
         float taxesRate = 0.895F;
 
-        float netTaxableMonthlySalary = monthlyGrossSalary * socialContributionsRate;
-        displaySalaryForecast("Le salaire net imposable mensuel de notre cher dev cadre francais est de : ", netTaxableMonthlySalary);
+        float netTaxableMonthlySalary = calculateNetTaxableSalary(monthlyGrossSalary, socialContributionsRate);
+        System.out.println("Le salaire net imposable mensuel de notre cher dev cadre francais est de : " + netTaxableMonthlySalary + " euros.\n---------------------------------");
 
-        float netTaxableAnnualSalary = annualGrossSalary * socialContributionsRate;
-        displaySalaryForecast("Le salaire net imposable annuel de notre cher dev cadre francais est de : ", netTaxableAnnualSalary);
+        float netTaxableAnnualSalary = calculateNetTaxableSalary(annualGrossSalary, socialContributionsRate);
+        System.out.println("Le salaire net imposable annuel de notre cher dev cadre francais est de : " + netTaxableAnnualSalary + " euros.\n---------------------------------");
 
-        float netMonthlySalary = netTaxableMonthlySalary * taxesRate;
-        displaySalaryForecast("Le salaire net mensuel de notre cher dev cadre francais est de : ", netMonthlySalary);
+        float netMonthlySalary = calculateNetSalary(netTaxableMonthlySalary, taxesRate);
+        System.out.println("Le salaire net mensuel de notre cher dev cadre francais est de : " + netMonthlySalary + " euros.\n---------------------------------");
 
-        float netAnnualSalary = netTaxableAnnualSalary * taxesRate;
-        displaySalaryForecast("Le salaire net annuel de notre cher dev cadre francais est de : ", netAnnualSalary);
-
+        float netAnnualSalary = calculateNetSalary(netTaxableAnnualSalary, taxesRate);
+        System.out.println("Le salaire net annuel de notre cher dev cadre francais est de : " + netAnnualSalary + " euros.\n---------------------------------");
 
     }
 
-    public static void displaySalaryForecast(String message, float value) {
-        System.out.println(message + value + " euros.");
-        System.out.println("---------------------------------");
+    public static float calculateNetTaxableSalary(float salary, float socialContributionsRate) {
+        return salary * socialContributionsRate;
+    }
+
+    public static float calculateNetSalary(float salary, float taxesRate) {
+        return salary * taxesRate;
     }
 
 }

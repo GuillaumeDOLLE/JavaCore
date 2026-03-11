@@ -44,7 +44,7 @@ public class AgeValidationFunctionRefactor {
         // calc
         long secondsSinceUserBirthday = currentSeconds - userBirthSeconds;
 
-        long majorityInSeconds = convertMajorityToSeconds();
+        long majorityInSeconds = getMajorityInSeconds();
         System.out.println("seconds for someone to be a young adult : " + majorityInSeconds);
 
         // 2nd version with seconds conversion before calc
@@ -57,19 +57,23 @@ public class AgeValidationFunctionRefactor {
         }
 
         // 1st version
-        int ageCategory = checkAdult(USER_BIRTH_DAY, USER_BIRTH_MONTH, USER_BIRTH_YEAR, currentDay, currentMonth, currentYear);
-        displayAgeCategoryMessage(ageCategory);
+        int ageCategory = checkAdult(USER_BIRTH_DAY, USER_BIRTH_MONTH, USER_BIRTH_YEAR,
+                currentDay, currentMonth, currentYear);
 
+        if (ageCategory == 1) {
+            System.out.println("You are an adult.");
+        }
+        else {
+            System.out.println("You are a minor.");
+        }
     }
 
     public static int checkAdult(int checkedDay, int checkedMonth, int checkedYear, int cDay, int cMonth, int cYear) {
-        if ((cYear - checkedYear > 18) || (cYear - checkedYear == 18) && (checkedMonth < cMonth || (checkedMonth == cMonth && checkedDay <= cDay))) return 1;
+        if ((cYear - checkedYear > 18) || (cYear - checkedYear == 18) &&
+                (checkedMonth < cMonth || (checkedMonth == cMonth && checkedDay <= cDay))) {
+            return 1;
+        }
         return 0;
-    }
-
-    public static void displayAgeCategoryMessage(int ageCategory) {
-        String message = ageCategory == 1 ? "You are an adult" : "You are a minor.";
-        System.out.println(message);
     }
 
     public static long convertDateToSeconds(int day, int month, int year) {
@@ -77,7 +81,7 @@ public class AgeValidationFunctionRefactor {
         return (long) day * DAYS_CONVERTED_IN_SECONDS + (long) month * MONTHS_CONVERTED_IN_SECONDS + year * YEARS_CONVERTED_IN_SECONDS;
     }
 
-    public static long convertMajorityToSeconds() {
+    public static long getMajorityInSeconds() {
         return ADULT_IN_YEARS * YEARS_CONVERTED_IN_SECONDS;
     }
 }
