@@ -3,24 +3,25 @@ package javacore.chapter04.function.exercise;
 public class FrenchNetSalaryCalculator {
 
     // taxable percent for each bracket
-    static final double BRACKET_1_PERCENT = 0.0;
-    static final double BRACKET_2_PERCENT = 11.0;
-    static final double BRACKET_3_PERCENT = 30.0;
-    static final double BRACKET_4_PERCENT = 41.0;
-    static final double BRACKET_5_PERCENT = 45.0;
+    static final double BRACKET_1_RATE = 0.0;
+    static final double BRACKET_2_RATE = 11.0;
+    static final double BRACKET_3_RATE = 30.0;
+    static final double BRACKET_4_RATE = 41.0;
+    static final double BRACKET_5_RATE = 45.0;
 
     // Upper bound of taxable brackets, I handle conditions with these.
-    static final int BRACKET_1_MIN = 0;
-    static final int BRACKET_2_MIN = 11294;
-    static final int BRACKET_3_MIN = 28797;
-    static final int BRACKET_4_MIN = 82341;
-    static final int BRACKET_5_MIN = 177106;
+    static final int BRACKET_1_THRESHOLD = 0;
+    static final int BRACKET_2_THRESHOLD = 11294;
+    static final int BRACKET_3_THRESHOLD = 28797;
+    static final int BRACKET_4_THRESHOLD = 82341;
+    static final int BRACKET_5_THRESHOLD = 177106;
 
-    public static double calculateAnnualGrossSalary(double hourlyGrossSalary) {
-        double dailyGrossSalary = hourlyGrossSalary * 7.7;
-        double weeklyGrossSalary = dailyGrossSalary * 5;
-        double monthlyGrossSalary = weeklyGrossSalary * 4;
-        return monthlyGrossSalary * 12;
+    static final int MAX_DEDUCTION_AMOUNT = 10000;
+
+    public static double getAnnualGrossSalary(double hourlyGrossSalary, double dailyWorkedHours, double weeklyWorkedDays,
+                                              double monthlyWorkedWeeks, double annuallyWorkedMonths) {
+        return hourlyGrossSalary * dailyWorkedHours * weeklyWorkedDays *
+                monthlyWorkedWeeks * annuallyWorkedMonths;
     }
 
     public static double applySocialCharges(double annualGrossSalary, double socialChargePercentage) {
@@ -29,69 +30,48 @@ public class FrenchNetSalaryCalculator {
     }
 
     public static double applyTaxAllowance(double annualNetSalary, double taxAllowancePercentage) {
-        double maxDeductionAmount = 10_000;
         double deductionAmount = annualNetSalary * taxAllowancePercentage / 100;
-        if (deductionAmount >= maxDeductionAmount) {
-            return annualNetSalary - maxDeductionAmount;
+        if (deductionAmount >= MAX_DEDUCTION_AMOUNT) {
+            return annualNetSalary - MAX_DEDUCTION_AMOUNT;
         }
         return annualNetSalary - annualNetSalary * taxAllowancePercentage / 100;
     }
 
+    public static double getTaxBracket(double remainingNetTaxableSalary, int bracketThreshold, double bracketRate) {
+
+        if (remainingNetTaxableSalary > bracketThreshold) {
+            double bracketAmount = remainingNetTaxableSalary - bracketThreshold;
+            return bracketAmount * bracketRate / 100;
+        }
+        return 0;
+    }
+
+    public static double getRemainingSalary(double salary, double threshold) {
+        if (salary > threshold) {
+            return threshold;
+        }
+        return salary;
+    }
+    
     public static double applyRevenueTax(double annualNetSalary) {
         double remainingNetTaxableSalary = annualNetSalary;
         double totalTaxAmount = 0;
-        if (remainingNetTaxableSalary > BRACKET_5_MIN) {
 
-            // taxable amount on fifth bracket
-            double fifthBracketAmount = remainingNetTaxableSalary - BRACKET_5_MIN;
+        double fifthTaxBracket = getTaxBracket(remainingNetTaxableSalary, BRACKET_5_THRESHOLD, BRACKET_5_RATE);
+        remainingNetTaxableSalary = getRemainingSalary(remainingNetTaxableSalary, BRACKET_5_THRESHOLD);
 
-            // tax amount
-            double fifthTaxBracket = fifthBracketAmount * BRACKET_5_PERCENT / 100;
+        double fourthTaxBracket = getTaxBracket(remainingNetTaxableSalary, BRACKET_4_THRESHOLD, BRACKET_4_RATE);
+        remainingNetTaxableSalary = getRemainingSalary(remainingNetTaxableSalary, BRACKET_4_THRESHOLD);
 
-            // subtract remaining salary with the amount taxed in this bracket to go in the next if (cascade)
-            remainingNetTaxableSalary = BRACKET_5_MIN;
+        double thirdTaxBracket = getTaxBracket(remainingNetTaxableSalary, BRACKET_3_THRESHOLD, BRACKET_3_RATE);
+        remainingNetTaxableSalary = getRemainingSalary(remainingNetTaxableSalary, BRACKET_3_THRESHOLD);
 
-            totalTaxAmount += fifthTaxBracket;
-        }
+        double secondTaxBracket = getTaxBracket(remainingNetTaxableSalary, BRACKET_2_THRESHOLD, BRACKET_2_RATE);
+        remainingNetTaxableSalary = getRemainingSalary(remainingNetTaxableSalary, BRACKET_2_THRESHOLD);
 
-        if (remainingNetTaxableSalary > BRACKET_4_MIN) {
+        double firstTaxBracket = getTaxBracket(remainingNetTaxableSalary, BRACKET_1_THRESHOLD, BRACKET_1_RATE);
 
-            double fourthBracketAmount = remainingNetTaxableSalary - BRACKET_4_MIN;
-            double fourthTaxBracket = fourthBracketAmount * BRACKET_4_PERCENT / 100;
-            remainingNetTaxableSalary = BRACKET_4_MIN;
-
-            totalTaxAmount += fourthTaxBracket;
-
-        }
-
-        if (remainingNetTaxableSalary > BRACKET_3_MIN) {
-
-            double thirdBracketAmount = remainingNetTaxableSalary - BRACKET_3_MIN;;
-            double thirdTaxBracket = thirdBracketAmount * BRACKET_3_PERCENT / 100;
-            remainingNetTaxableSalary = BRACKET_3_MIN;
-
-            totalTaxAmount += thirdTaxBracket;
-
-        }
-
-        if (remainingNetTaxableSalary > BRACKET_2_MIN) {
-
-            double secondBracketAmount = remainingNetTaxableSalary - BRACKET_2_MIN;
-            double secondTaxBracket = secondBracketAmount * BRACKET_2_PERCENT / 100;
-            remainingNetTaxableSalary = BRACKET_2_MIN;
-
-            totalTaxAmount += secondTaxBracket;
-
-        }
-
-        if (remainingNetTaxableSalary > BRACKET_1_MIN) {
-
-            double firstBracketAmount = remainingNetTaxableSalary - BRACKET_1_MIN;
-            double firstTaxBracket = firstBracketAmount * BRACKET_1_PERCENT / 100;
-
-            totalTaxAmount += firstTaxBracket;
-
-        }
+        totalTaxAmount = fifthTaxBracket + fourthTaxBracket + thirdTaxBracket + secondTaxBracket + firstTaxBracket;
 
         return annualNetSalary - totalTaxAmount;
     }
@@ -106,6 +86,10 @@ public class FrenchNetSalaryCalculator {
             socialChargePercentage = 25;
         }
         double hourlyGrossSalary = 25;
+        double dailyWorkedHours = 7.7;
+        double weeklyWorkedDays = 5;
+        double monthlyWorkedWeeks = 4;
+        double annuallyWorkedMonths = 12;
         double taxAllowancePercentage = 10;
 
         double minFrenchHourlyWage = 11.07;
@@ -113,7 +97,8 @@ public class FrenchNetSalaryCalculator {
         double averageFrenchHourlySalary = 22.50;
         double wealthFrenchThresholdHourlySalary = 35;
 
-        double annualGrossSalary = calculateAnnualGrossSalary(wealthFrenchThresholdHourlySalary);
+        double annualGrossSalary = getAnnualGrossSalary(wealthFrenchThresholdHourlySalary, dailyWorkedHours, weeklyWorkedDays,
+                monthlyWorkedWeeks, annuallyWorkedMonths);
         System.out.printf("Annual gross salary : %.2f€%n", annualGrossSalary);
 
         double annualNetSalary = applySocialCharges(annualGrossSalary, socialChargePercentage);
