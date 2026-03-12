@@ -3,7 +3,7 @@ package javacore.chapter04.function.exercise.project.refactor;
 public class AgeValidationFunctionRefactor {
 
     // Inputs
-    static  final int USER_BIRTH_DAY  = 18; // < 10, 10, > 10
+    static  final int USER_BIRTH_DAY  = 13; // < 10, 10, > 10
     static final int USER_BIRTH_MONTH = 3; // < 2, 2, > 2
     static final int USER_BIRTH_YEAR  = 2008; // < 2008, 2008, > 2008
 
@@ -68,9 +68,9 @@ public class AgeValidationFunctionRefactor {
         }
     }
 
-    public static int checkAdult(int checkedDay, int checkedMonth, int checkedYear, int cDay, int cMonth, int cYear) {
-        if ((cYear - checkedYear > 18) || (cYear - checkedYear == 18) &&
-                (checkedMonth < cMonth || (checkedMonth == cMonth && checkedDay <= cDay))) {
+    public static int checkAdult(int userBirthDay, int userBirthMonth, int userBirthYear, int cDay, int cMonth, int cYear) {
+        if ((cYear - userBirthYear > 18) || (cYear - userBirthYear == 18) &&
+                (cMonth > userBirthMonth || (cMonth == userBirthMonth && cDay >= userBirthDay))) {
             return 1;
         }
         return 0;

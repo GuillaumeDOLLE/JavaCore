@@ -10,11 +10,8 @@ public class FibonacciCalculatorFunctionRefactor {
         return previousTerm.add(currentTerm);
     }
 
-    public static boolean isEvenTerm(BigDecimal potentialEvenTerm) {
-        if (potentialEvenTerm.remainder(EVEN_DIVISOR).equals(BigDecimal.ZERO)) {
-            return true;
-        }
-        return false;
+    public static boolean isEven(BigDecimal number) {
+        return number.remainder(EVEN_DIVISOR).equals(BigDecimal.ZERO);
     }
 
     public static void main(String[] args) {
@@ -36,7 +33,7 @@ public class FibonacciCalculatorFunctionRefactor {
         for (int countTerm = 2; countTerm < limitNumber; countTerm++) {
             BigDecimal nextTerm = computeNextTerm(previousTerm, currentTerm);
 
-            if(isEvenTerm(nextTerm)) {
+            if(isEven(nextTerm)) {
                 evenTermsCount++;
             }
 

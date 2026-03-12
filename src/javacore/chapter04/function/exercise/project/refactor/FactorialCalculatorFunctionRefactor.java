@@ -5,7 +5,7 @@ public class FactorialCalculatorFunctionRefactor {
     public static long getFactorial(int number) {
         if (number < 0) {
             System.out.println("You can't calculate the factorial number if it is negative.");
-            return 0;
+            return -1;
         }
         else if (number == 0) {
             System.out.println("The factorial number of 0 is automatically 1.");

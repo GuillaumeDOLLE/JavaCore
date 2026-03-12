@@ -12,11 +12,11 @@ public class FrenchRevenueTaxCalculatorFunctionRefactor {
     static final double BRACKET_5_PERCENT = 45.0;
 
     // Upper bound of taxable brackets, I handle conditions with these.
-    static final int BRACKET_1_MIN = 0;
-    static final int BRACKET_2_MIN = 11294;
-    static final int BRACKET_3_MIN = 28797;
-    static final int BRACKET_4_MIN = 82341;
-    static final int BRACKET_5_MIN = 177106;
+    static final int BRACKET_1_THRESHOLD = 0;
+    static final int BRACKET_2_THRESHOLD = 11294;
+    static final int BRACKET_3_THRESHOLD = 28797;
+    static final int BRACKET_4_THRESHOLD = 82341;
+    static final int BRACKET_5_THRESHOLD = 177106;
 
     // total taxable amount compared to the net taxable salary
     static double totalTaxAmount = 0;
@@ -92,19 +92,19 @@ public class FrenchRevenueTaxCalculatorFunctionRefactor {
         // copy value
         double remainingNetTaxableSalary = netTaxableSalaryAfterDeduction;
 
-        remainingNetTaxableSalary = getTaxBracketAmount(remainingNetTaxableSalary, BRACKET_5_MIN, BRACKET_5_PERCENT);
+        remainingNetTaxableSalary = getTaxBracketAmount(remainingNetTaxableSalary, BRACKET_5_THRESHOLD, BRACKET_5_PERCENT);
         fifthTaxBracket = lastBracketTaxAmount;
 
-        remainingNetTaxableSalary = getTaxBracketAmount(remainingNetTaxableSalary, BRACKET_4_MIN, BRACKET_4_PERCENT);
+        remainingNetTaxableSalary = getTaxBracketAmount(remainingNetTaxableSalary, BRACKET_4_THRESHOLD, BRACKET_4_PERCENT);
         fourthTaxBracket = lastBracketTaxAmount;
 
-        remainingNetTaxableSalary = getTaxBracketAmount(remainingNetTaxableSalary, BRACKET_3_MIN, BRACKET_3_PERCENT);
+        remainingNetTaxableSalary = getTaxBracketAmount(remainingNetTaxableSalary, BRACKET_3_THRESHOLD, BRACKET_3_PERCENT);
         thirdTaxBracket = lastBracketTaxAmount;
 
-        remainingNetTaxableSalary = getTaxBracketAmount(remainingNetTaxableSalary, BRACKET_2_MIN, BRACKET_2_PERCENT);
+        remainingNetTaxableSalary = getTaxBracketAmount(remainingNetTaxableSalary, BRACKET_2_THRESHOLD, BRACKET_2_PERCENT);
         secondTaxBracket = lastBracketTaxAmount;
 
-        getTaxBracketAmount(remainingNetTaxableSalary, BRACKET_1_MIN, BRACKET_1_PERCENT);
+        getTaxBracketAmount(remainingNetTaxableSalary, BRACKET_1_THRESHOLD, BRACKET_1_PERCENT);
         firstTaxBracket = lastBracketTaxAmount;
 
         totalTaxAmount = fifthTaxBracket + fourthTaxBracket + thirdTaxBracket + secondTaxBracket + firstTaxBracket;
