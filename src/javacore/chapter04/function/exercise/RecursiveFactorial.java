@@ -4,13 +4,11 @@ public class RecursiveFactorial {
 
     public static long getFactorial(int number, long result) {
 
-        result += result * (number - 1);
-        number--;
-
-        if (number <= 1) {
-            return result;
+        if (number > 1) {
+            return getFactorial(number - 1, result * number);
         }
-        return getFactorial(number, result);
+
+        return result;
     }
 
     public static void main(String[] args) {

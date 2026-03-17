@@ -6,22 +6,22 @@ public class RecursiveFibonacci {
 
     public static final BigDecimal EVEN_DIVISOR = new BigDecimal("2");
 
-    public static void computeNextTerm(BigDecimal previousTerm, BigDecimal currentTerm, int limitNumber, int countTerm) {
-        BigDecimal nextTerm = previousTerm.add(currentTerm);
+    public static void computeNextTerm(BigDecimal previousTerm, BigDecimal currentTerm, int countTerm, final int LIMIT_NUMBER) {
+        if (countTerm < LIMIT_NUMBER) {
+            BigDecimal nextTerm = previousTerm.add(currentTerm);
 
-        countTerm++;
-        System.out.println("The term F(" + (countTerm + 1) + ") of the Fibonacci sequence is : " + nextTerm);
-        if (countTerm >= limitNumber) {
-            return;
+            System.out.println("The term F(" + (countTerm) + ") of the Fibonacci sequence is : " + nextTerm);
+            countTerm++;
+
+            computeNextTerm(currentTerm, nextTerm, countTerm, LIMIT_NUMBER);
         }
-
-        previousTerm = currentTerm;
-        currentTerm = nextTerm;
-
-        computeNextTerm(previousTerm, currentTerm, limitNumber, countTerm);
+        return;
     }
 
     public static void main(String[] args) {
+
+        // 48 because we already have F(0) and F(1) hardcoded by definition
+        final int LIMIT_NUMBER = 50;
 
         // init values
         final BigDecimal FIRST_TERM = new BigDecimal("0");
@@ -33,11 +33,9 @@ public class RecursiveFibonacci {
         BigDecimal previousTerm = FIRST_TERM;
         BigDecimal currentTerm = SECOND_TERM;
 
-        // 48 because we already have F(0) and F(1) hardcoded by definition
-        int limitNumber = 48;
-        int countTerm = 0;
+        int countTerm = 2;
 
-        computeNextTerm(previousTerm, currentTerm, limitNumber, countTerm);
+        computeNextTerm(previousTerm, currentTerm, countTerm, LIMIT_NUMBER);
 
     }
 

@@ -15,6 +15,8 @@ public class CoinChangerV4 {
             return stockByValue;
         }
         return requiredEuros;
+
+//        return requiredEuros > stockByValue ? stockByValue : requiredEuros;
     }
 
     public static int getMaxAmountOfStockAvailable(int stockFifty, int stockTwenty, int stockTen, int stockTwo, int stockOne) {
@@ -47,10 +49,6 @@ public class CoinChangerV4 {
         int requiredTwoEuroCoins = 0;
         int requiredOneEuroCoins = 0;
 
-        // V2 variables for conditions | All stocks
-        int maxAmountAvailable = getMaxAmountOfStockAvailable(stockFiftyEuroNotes, stockTwentyEuroNotes, stockTenEuroNotes,
-                stockTwoEuroCoins, stockOneEuroCoins);
-
         // change due by the machine to the client
         int amountChange = amountPaid - totalBill;
         int remainingAmountChange = amountChange;
@@ -58,7 +56,9 @@ public class CoinChangerV4 {
         // remaining amount left to pay by the client to equal/exceed the bill amount
         int amountDue = totalBill - amountPaid;
 
-        String insufficientDenominationsMessage = "Sorry, I do not have the correct denominations for that, do you have smaller denominations ?";
+        // V2 variables for conditions | All stocks
+        int maxAmountAvailable = getMaxAmountOfStockAvailable(stockFiftyEuroNotes, stockTwentyEuroNotes, stockTenEuroNotes,
+                stockTwoEuroCoins, stockOneEuroCoins);
 
         if (totalBill == amountPaid) {
             System.out.printf("There is no change, have a good day. :)%n");
@@ -102,7 +102,7 @@ public class CoinChangerV4 {
 
 
             if (remainingAmountChange > 0) {
-                System.out.println(insufficientDenominationsMessage);
+                System.out.println("Sorry, I do not have the correct denominations for that, do you have smaller denominations ?");
             }
 
             else {
