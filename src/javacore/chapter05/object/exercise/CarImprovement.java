@@ -38,8 +38,8 @@ public class CarImprovement {
 
     // This method might fluctuate depending on the value of isEngineStarted
     public void displayInformations() {
-
-        System.out.println("N° Série : " + this.serialNumber + " | Marque : " + this.brand + " | Modèle : " + this.model + " | Couleur : " + this.color + " | Kilométrage : " + this.odometer + " kms | Etat de démarrage : " + this.isEngineStarted);
+        String engineStatus = this.isEngineStarted ? "Démarrée" : "Arrêtée";
+        System.out.println("N° Série : " + this.serialNumber + " | Marque : " + this.brand + " | Modèle : " + this.model + " | Couleur : " + this.color + " | Kilométrage : " + this.odometer + " kms | Etat de démarrage : " + engineStatus);
 
     }
 
