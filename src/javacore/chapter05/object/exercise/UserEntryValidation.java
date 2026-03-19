@@ -13,7 +13,7 @@ public class UserEntryValidation {
         System.out.print("Entrez le jour de la semaine : ");
         do {
             today = scan.next();
-        } while (!today.equals("jeudi"));
+        } while (!today.equalsIgnoreCase("jeudi"));
 
     }
 
