@@ -19,14 +19,10 @@ public class PaperOrderPriceCalculator {
         double totalExclTax = 0;
         double totalInclTax = 0;
 
-        Scanner scan = new Scanner(System.in);
+        int attempts = 0;
+        int limitAttempts = 5;
 
-        // 10 000 feuilles à 0.01€
-        // 10 001 à 30 000 0.005€
-        // 30 001 et + 0.0025€
-        // Min 200 Max 200 000
-        // TVA 20%
-        // Frais livraison 9.99€ si < 200€ de commande
+        Scanner scan = new Scanner(System.in);
 
         System.out.print("Bonjour, combien de feuilles souhaitez vous commander ? (Minimum = 200 | Maximum = 200000) : ");
 
@@ -34,6 +30,11 @@ public class PaperOrderPriceCalculator {
             sheetQuantity = scan.nextInt();
             if (sheetQuantity < amountPaperOrderMin || sheetQuantity > amountPaperOrderMax) {
                 System.out.println("Cette valeur est invalide, veuillez saisir une valeur correcte.");
+            }
+            attempts++;
+            if (attempts >= limitAttempts) {
+                System.out.println("Vous avez épuisé toutes vos tentatives de commande, au revoir.");
+                return;
             }
 
         } while (amountPaperOrderMin > sheetQuantity || sheetQuantity > amountPaperOrderMax);
