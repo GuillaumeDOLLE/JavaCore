@@ -6,8 +6,9 @@ public class PaperOrderPriceCalculator {
 
     public static final int SHEET_QUANTITY_MIN = 200;
     public static final int SHEET_QUANTITY_MAX = 200_000;
-    public static final int MIDDLE_TIER_LIMIT = 10_000;
-    public static final int HIGH_TIER_LIMIT = 30_000;
+    public static final int FIRST_TIER_LIMIT = 0;
+    public static final int SECOND_TIER_LIMIT = 10_000;
+    public static final int THIRD_TIER_LIMIT = 30_000;
     public static final int FREE_SHIPPING_THRESHOLD = 200;
     public static final double SHIPPING_AMOUNT = 9.99;
     public static final double VAT_RATE = 0.2;
@@ -21,23 +22,25 @@ public class PaperOrderPriceCalculator {
 
         do {
             sheetQuantity = scan.nextInt();
-            if (isInvalidSheetQuantity(sheetQuantity)) {
+            if (!isValidSheetQuantity(sheetQuantity)) {
+                if (attempts == limitAttempts - 1) {
+                    System.out.println("Vous avez épuisé toutes vos tentatives de commandes, au revoir.");
+                    return 0;
+                }
                 System.out.println("Cette valeur est invalide, veuillez saisir une valeur correcte.");
+                attempts++;
             }
-            attempts++;
-            if (attempts >= limitAttempts) {
-                System.out.println("Vous avez épuisé toutes vos tentatives de commandes, au revoir.");
-                return 0;
+            else {
+                System.out.println("Votre commande de " + sheetQuantity + " feuilles a bien été enregistré.");
+                return sheetQuantity;
             }
-        } while (isInvalidSheetQuantity(sheetQuantity));
+        } while (attempts < limitAttempts);
 
-        System.out.println("Votre commande de " + sheetQuantity + " feuilles a bien été enregistré.");
-
-        return sheetQuantity;
+        return 0;
     }
 
-    public static boolean isInvalidSheetQuantity(int sheetQuantity) {
-        return sheetQuantity < SHEET_QUANTITY_MIN || sheetQuantity > SHEET_QUANTITY_MAX;
+    public static boolean isValidSheetQuantity(int sheetQuantity) {
+        return sheetQuantity >= SHEET_QUANTITY_MIN && sheetQuantity <= SHEET_QUANTITY_MAX;
 
     }
 
@@ -45,16 +48,16 @@ public class PaperOrderPriceCalculator {
         int remainingSheets = sheetQuantity;
         double sheetsSubtotal = 0;
 
-        if (remainingSheets > HIGH_TIER_LIMIT) {
-            int sheetsInHighestBracket = sheetQuantity - HIGH_TIER_LIMIT;
+        if (remainingSheets > THIRD_TIER_LIMIT) {
+            int sheetsInHighestBracket = remainingSheets - THIRD_TIER_LIMIT;
             sheetsSubtotal += sheetsInHighestBracket * 0.0025;
             remainingSheets -= sheetsInHighestBracket;
         }
-        if (remainingSheets > MIDDLE_TIER_LIMIT) {
-            int sheetsInMiddleBracket = remainingSheets - MIDDLE_TIER_LIMIT;
+        if (remainingSheets > SECOND_TIER_LIMIT) {
+            int sheetsInMiddleBracket = remainingSheets - SECOND_TIER_LIMIT;
             sheetsSubtotal += sheetsInMiddleBracket * 0.005;
         }
-        if (remainingSheets <= MIDDLE_TIER_LIMIT) {
+        if (remainingSheets > FIRST_TIER_LIMIT) {
             sheetsSubtotal += remainingSheets * 0.01;
         }
         return sheetsSubtotal;
