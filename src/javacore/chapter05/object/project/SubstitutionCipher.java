@@ -31,22 +31,15 @@ public class SubstitutionCipher {
             // find each char
             currentChar = textToEncrypt.charAt(textIndex);
 
-            int currentCharIndex = 0;
-            if (currentChar == ' ') {
-                currentSubChar = ' ';
-            }
-            else if (currentChar == '!') {
+            if (currentChar == ' ' || currentChar == '!') {
                 currentSubChar = currentChar;
             }
             else {
-                for (int charIndex = 0; charIndex < latinAlphabet.length(); charIndex++) {
-                    // find char index from latin alphabet
-                     currentCharIndex = latinAlphabet.indexOf(currentChar);
-                }
-                for (int subCharIndex = 0; subCharIndex < substitutionAlphabet.length(); subCharIndex++) {
-                    // find sub char with latin alphabet index
-                    currentSubChar = substitutionAlphabet.charAt(currentCharIndex);
-                }
+                int currentCharIndex = 0;
+                // find char index from latin alphabet
+                currentCharIndex = latinAlphabet.indexOf(currentChar);
+                // find sub char with latin alphabet index
+                currentSubChar = substitutionAlphabet.charAt(currentCharIndex);
             }
             // Rebuilding of the text from each substitution char
             textEncrypted += currentSubChar;
