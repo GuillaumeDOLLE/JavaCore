@@ -16,27 +16,29 @@ public class PaperOrderPriceCalculator {
     public static int promptSheetQuantity(Scanner scan) {
         System.out.print("Bonjour, combien de feuilles souhaitez vous commander ? (Minimum = " + SHEET_QUANTITY_MIN + " | Maximum = " + SHEET_QUANTITY_MAX + ") : ");
 
+        final int LIMIT_ATTEMPTS = 5;
         int attempts = 0;
-        int limitAttempts = 5;
         int sheetQuantity;
+        boolean loopCondition;
 
         do {
+            loopCondition = attempts < LIMIT_ATTEMPTS - 1;
             sheetQuantity = scan.nextInt();
             if (!isValidSheetQuantity(sheetQuantity)) {
-                if (attempts == limitAttempts - 1) {
-                    System.out.println("Vous avez épuisé toutes vos tentatives de commandes, au revoir.");
-                    return 0;
-                }
                 System.out.println("Cette valeur est invalide, veuillez saisir une valeur correcte.");
-                attempts++;
             }
             else {
                 System.out.println("Votre commande de " + sheetQuantity + " feuilles a bien été enregistré.");
-                return sheetQuantity;
+                break;
             }
-        } while (attempts < limitAttempts);
+            attempts++;
+            if (!loopCondition) {
+                System.out.println("Vous avez épuisé toutes vos tentatives de commandes, au revoir.");
+                sheetQuantity = -1;
+            }
+        } while (loopCondition);
 
-        return 0;
+        return sheetQuantity;
     }
 
     public static boolean isValidSheetQuantity(int sheetQuantity) {
@@ -49,13 +51,14 @@ public class PaperOrderPriceCalculator {
         double sheetsSubtotal = 0;
 
         if (remainingSheets > THIRD_TIER_LIMIT) {
-            int sheetsInHighestBracket = remainingSheets - THIRD_TIER_LIMIT;
-            sheetsSubtotal += sheetsInHighestBracket * 0.0025;
-            remainingSheets -= sheetsInHighestBracket;
+            int sheetsInThirdBracket = remainingSheets - THIRD_TIER_LIMIT;
+            sheetsSubtotal += sheetsInThirdBracket * 0.0025;
+            remainingSheets -= sheetsInThirdBracket;
         }
         if (remainingSheets > SECOND_TIER_LIMIT) {
-            int sheetsInMiddleBracket = remainingSheets - SECOND_TIER_LIMIT;
-            sheetsSubtotal += sheetsInMiddleBracket * 0.005;
+            int sheetsInSecondBracket = remainingSheets - SECOND_TIER_LIMIT;
+            sheetsSubtotal += sheetsInSecondBracket * 0.005;
+            remainingSheets -= sheetsInSecondBracket;
         }
         if (remainingSheets > FIRST_TIER_LIMIT) {
             sheetsSubtotal += remainingSheets * 0.01;
@@ -89,7 +92,7 @@ public class PaperOrderPriceCalculator {
 
         double totalInclTax = applyVAT(finalTotalExclTax);
 
-        if (sheetQuantity != 0) {
+        if (sheetQuantity > 0) {
             System.out.println("Prix de la commande hors taxe : " + finalTotalExclTax +
                     "\nPrix de la commande toute taxes comprises : " + totalInclTax);
         }
