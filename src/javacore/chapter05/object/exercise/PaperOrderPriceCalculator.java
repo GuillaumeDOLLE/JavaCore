@@ -17,24 +17,25 @@ public class PaperOrderPriceCalculator {
         System.out.print("Bonjour, combien de feuilles souhaitez vous commander ? (Minimum = " + SHEET_QUANTITY_MIN + " | Maximum = " + SHEET_QUANTITY_MAX + ") : ");
 
         final int LIMIT_ATTEMPTS = 5;
-        int attempts = 0;
+        int attempts = 1;
         int sheetQuantity;
         boolean loopCondition;
 
         do {
-            loopCondition = attempts < LIMIT_ATTEMPTS - 1;
+
             sheetQuantity = scan.nextInt();
-            if (!isValidSheetQuantity(sheetQuantity)) {
-                System.out.println("Cette valeur est invalide, veuillez saisir une valeur correcte.");
+            if (isValidSheetQuantity(sheetQuantity)) {
+                System.out.println("Votre commande de " + sheetQuantity + " feuilles a bien été enregistré.");
+                return sheetQuantity;
             }
             else {
-                System.out.println("Votre commande de " + sheetQuantity + " feuilles a bien été enregistré.");
-                break;
-            }
-            attempts++;
-            if (!loopCondition) {
-                System.out.println("Vous avez épuisé toutes vos tentatives de commandes, au revoir.");
-                sheetQuantity = -1;
+                System.out.println("Cette valeur est invalide, veuillez saisir une valeur correcte.");
+                attempts++;
+                loopCondition = attempts <= LIMIT_ATTEMPTS;
+                if (!loopCondition) {
+                    System.out.println("Vous avez épuisé toutes vos tentatives de commandes, au revoir.");
+                    sheetQuantity = -1;
+                }
             }
         } while (loopCondition);
 
