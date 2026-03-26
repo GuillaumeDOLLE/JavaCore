@@ -2,6 +2,41 @@ package javacore.chapter05.object.project;
 
 public class SubstitutionCipher {
 
+    public static String cipher(String textToEncrypt, String alphabet, String substitutionAlphabet, int cipherIterations) {
+        char currentChar = ' ';
+        char currentSubChar = ' ';
+        String currentLatinLetter = "";
+        String currentSubLetter = "";
+
+        for (int index = 0; index < cipherIterations; index++) {
+            String tempEncryptedText = textToEncrypt;
+            // first encrypt
+            for (int i = 0; i < alphabet.length(); i++) {
+                currentChar = alphabet.charAt(i);
+
+                currentLatinLetter = "" + currentChar;
+
+                tempEncryptedText = tempEncryptedText.replaceAll(currentLatinLetter, "_" + i + "_");
+
+            }
+
+            String textEncrypted = tempEncryptedText;
+
+            // second encrypt to exclude overlapping replacements
+            for (int i = 0; i < substitutionAlphabet.length(); i++) {
+                currentSubChar = substitutionAlphabet.charAt(i);
+
+                currentSubLetter = "" + currentSubChar;
+
+                textEncrypted = textEncrypted.replaceAll("_" + i + "_", currentSubLetter);
+            }
+
+            textToEncrypt = textEncrypted;
+        }
+
+        return textToEncrypt;
+    }
+
     public static String cipher(String textToEncrypt, String alphabet, String substitutionAlphabet) {
         char currentChar = ' ';
         char currentSubChar = ' ';
@@ -55,6 +90,11 @@ public class SubstitutionCipher {
         String textEncrypted = "";
         textEncrypted = cipher(textToEncrypt, latinAlphabet, substitutionAlphabet);
         System.out.println("Final encrypted text : " + textEncrypted);
+
+        String textEncryptedThreeTimes = "";
+        int cipherIterations = 3;
+        textEncryptedThreeTimes = cipher(textToEncrypt, latinAlphabet, substitutionAlphabet, cipherIterations);
+        System.out.println("Final encrypted text after " + cipherIterations + " times : " + textEncryptedThreeTimes);
 
     }
 
