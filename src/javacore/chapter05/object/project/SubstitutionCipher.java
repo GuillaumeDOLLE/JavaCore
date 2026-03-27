@@ -4,8 +4,33 @@ import java.util.Scanner;
 
 public class SubstitutionCipher {
 
-    public static final String CIPHER_TEXT = "chiffrement";
-    public static final String DECIPHER_TEXT = "déchiffrement";
+    public static class PromptConfig {
+        String startMessage;
+        String errorMessage;
+        String endMessage;
+        String type;
+        Object defaultValue;
+
+        public PromptConfig(String startMessage, String errorMessage, String endMessage, String type, Object defaultValue) {
+            this.startMessage = startMessage;
+            this.errorMessage = errorMessage;
+            this.endMessage = endMessage;
+            this.type = type;
+            this.defaultValue = defaultValue;
+        }
+    }
+
+    public static final String CIPHER_TEXT = "c";
+    public static final String DECIPHER_TEXT = "d";
+
+    public static final String TEXT = "text";
+    public static final String ACTION = "action";
+    public static final String ITERATION = "iteration";
+    public static final String ALPHABET = "alphabet";
+
+    public static final int ALPHABET_LENGTH = 26;
+
+    public static final int LIMIT_ATTEMPTS = 5;
 
     public static String cipher(String textToEncrypt, String alphabet, String substitutionAlphabet, int cipherIterations) {
 
@@ -16,47 +41,6 @@ public class SubstitutionCipher {
         }
 
         return textToEncrypt;
-    }
-
-    public static String decipher(String textToDecrypt, String alphabet, String substitutionAlphabet, int decipherIterations) {
-
-        for (int index = 0; index < decipherIterations; index++) {
-            String tempDecryptedText = textToDecrypt;
-
-            textToDecrypt = decipher(tempDecryptedText, alphabet, substitutionAlphabet);
-        }
-
-        return textToDecrypt;
-    }
-
-    public static String decipher(String textToDecrypt, String alphabet, String substitutionAlphabet) {
-        char currentChar = ' ';
-        char currentSubChar = ' ';
-        String currentLatinLetter = "";
-        String currentSubLetter = "";
-        String tempDecryptedText = textToDecrypt;
-
-        for (int i = 0; i < substitutionAlphabet.length(); i++) {
-            currentSubChar = substitutionAlphabet.charAt(i);
-
-            currentSubLetter = "" + currentSubChar;
-
-            tempDecryptedText = tempDecryptedText.replaceAll(currentSubLetter, "_" + i + "_");
-
-        }
-
-        String textDecrypted = tempDecryptedText;
-
-        for (int i = 0; i < alphabet.length(); i++) {
-            currentChar = alphabet.charAt(i);
-
-            currentLatinLetter = "" + currentChar;
-
-            textDecrypted = textDecrypted.replaceAll("_" + i + "_", currentLatinLetter);
-        }
-
-        textToDecrypt = textDecrypted;
-        return textToDecrypt;
     }
 
     public static String cipher(String textToEncrypt, String alphabet, String substitutionAlphabet) {
@@ -91,90 +75,138 @@ public class SubstitutionCipher {
         return textToEncrypt;
     }
 
-    public static String promptUserText(Scanner scan) {
-        System.out.print("Veuillez entrer un texte en minuscule : ");
+    public static Object promptUser(Scanner scan, PromptConfig config) {
+        System.out.print(config.startMessage);
 
-        final int LIMIT_ATTEMPTS = 5;
         int attempts = 1;
-        String userEntryText;
-        boolean loopCondition;
 
-        do {
-            userEntryText = scan.nextLine().toLowerCase();
-            if (isValidEntryText(userEntryText)) {
-                return userEntryText;
+        while (attempts <= LIMIT_ATTEMPTS) {
+            Object value = readValue(scan, config.type);
+
+            if (isValid(value, config.type)) {
+                return value;
+            }
+
+            if (attempts == LIMIT_ATTEMPTS) {
+                System.out.print(config.endMessage);
+                return config.defaultValue;
+            }
+
+            System.out.print(config.errorMessage);
+            attempts++;
+        }
+
+        return config.defaultValue;
+    }
+
+    public static Object readValue(Scanner scan, String type) {
+        if (type.equals(TEXT)) {
+            return scan.nextLine().toLowerCase();
+        }
+
+        if (type.equals(ACTION)) {
+            return scan.nextLine().toLowerCase().trim();
+        }
+
+        if (type.equals(ITERATION)) {
+            // has to be an integer
+            if (scan.hasNextInt()) {
+                int value = scan.nextInt();
+                // empty the buffer before returning the integer
+                scan.nextLine();
+                return value;
             }
             else {
-                System.out.print("Ce texte est invalide, veuillez saisir un nouveau texte");
-                attempts++;
-                loopCondition = attempts <= LIMIT_ATTEMPTS;
-                if (!loopCondition) {
-                    System.out.print("\nVous avez épuisé toutes vos tentatives, vous ne prenez pas ça au sérieux, au revoir.");
-                    userEntryText = "";
-                }
+                // empty the buffer if the user types whatever but an integer
+                scan.nextLine();
+                // null to tell invalid entry
+                return null;
             }
-        } while (loopCondition);
+        }
 
-        return userEntryText;
+        if (type.equals(ALPHABET)) {
+            return scan.nextLine().toLowerCase().trim();
+        }
+
+        return null;
+    }
+
+    public static boolean isValid(Object value, String type) {
+        if (type.equals(TEXT)) {
+            return isValidEntryText((String) value);
+        }
+
+        if (type.equals(ACTION)) {
+            return isValidEntryAction((String) value);
+        }
+
+        if (type.equals(ITERATION)) {
+            if (value == null) {
+                return false;
+            }
+            return isValidEntryIteration((int) value);
+        }
+
+        if (type.equals(ALPHABET)) {
+            return isValidAlphabet((String) value);
+        }
+
+        return false;
+    }
+
+    public static String promptUserText(Scanner scan) {
+        PromptConfig config = new PromptConfig(
+                "Veuillez entrer un texte en minuscule : ",
+                "Ce texte est invalide, veuillez saisir un nouveau texte : ",
+                "\nVous avez épuisé toutes vos tentatives, au revoir.",
+                TEXT,
+                null
+        );
+
+        return (String) promptUser(scan, config);
     }
 
     public static String promptUserAction(Scanner scan) {
-        System.out.print("Veuillez choisir l'action à effectuer (chiffrement / déchiffrement) : ");
+        PromptConfig config = new PromptConfig(
+                "Veuillez choisir l'action à effectuer (c pour chiffrement / d pour déchiffrement) : ",
+                "Cette action est invalide, veuillez saisir une nouvelle action : ",
+                "\n Vous avez épuisé toutes vos tentatives, au revoir.",
+                ACTION,
+                ""
+        );
 
-        final int LIMIT_ATTEMPTS = 5;
-        int attempts = 1;
-        String userEntryAction;
-        boolean loopCondition;
-
-        do {
-            userEntryAction = scan.nextLine().toLowerCase().trim();
-            if (isValidEntryAction(userEntryAction)) {
-                return userEntryAction;
-            }
-            else {
-                System.out.print("Cette action est invalide, veuillez saisir une nouvelle action : ");
-                attempts++;
-                loopCondition = attempts <= LIMIT_ATTEMPTS;
-                if (!loopCondition) {
-                    System.out.print("\nVous avez épuisé toutes vos tentatives, vous ne prenez pas ça au sérieux, au revoir.");
-                    userEntryAction = "";
-                }
-            }
-        } while (loopCondition);
-
-        return userEntryAction;
+        return (String) promptUser(scan, config);
 
     }
 
     public static int promptUserIterations(Scanner scan) {
-        System.out.print("Veuillez saisir un nombre afin de connaitre le nombre d'itérations nécessaires pour votre action : ");
+        PromptConfig config = new PromptConfig(
+                "Veuillez saisir un nombre afin de connaitre le nombre d'itérations nécessaires pour votre action : ",
+                "Cette valeur est invalide, veuillez saisir une nouvelle valeur : ",
+                "\nVous avez épuisé toutes vos tentatives, le nombre d'itérations par défaut va être appliqué (1).",
+                ITERATION,
+                1
+        );
 
-        final int LIMIT_ATTEMPTS = 5;
-        int attempts = 1;
-        int userEntryIterations;
-        boolean loopCondition;
+        return (int) promptUser(scan, config);
+    }
 
-        do {
-            userEntryIterations = scan.nextInt();
-            if (isValidEntryIteration(userEntryIterations)) {
-                return userEntryIterations;
-            }
-            else {
-                System.out.print("Cette valeur est invalide, veuillez saisir une nouvelle valeur : ");
-                attempts++;
-                loopCondition = attempts <= LIMIT_ATTEMPTS;
-                if (!loopCondition) {
-                    System.out.print("\nVous avez épuisé toutes vos tentatives, vous ne prenez pas ça au sérieux, le nombre d'itérations par défaut va être appliqué (1).");
-                    userEntryIterations = 1;
-                }
-            }
-        } while (loopCondition);
+    public static String promptUserAlphabet(Scanner scan) {
+        PromptConfig config = new PromptConfig(
+                "Veuillez saisir un alphabet de substitution, veillez à entrer les 26 caractères" +
+                        " de l'alphabet dans l'ordre que vous voulez, sans faire de doublons : ",
+                "Cet alphabet est invalide, veuillez saisir un nouvel alphabet : ",
+                "\nVous avez épuisé toutes vos tentatives, au revoir.",
+                ALPHABET,
+                ""
+        );
 
-        return userEntryIterations;
+        return (String) promptUser(scan, config);
+
     }
 
     public static boolean isValidEntryText(String userText) {
-        return userText.matches(".*[a-zA-Z].*");
+        return userText.matches("[a-zA-Z ]*");
     }
 
     public static boolean isValidEntryAction(String userAction) {
@@ -183,6 +215,24 @@ public class SubstitutionCipher {
 
     public static boolean isValidEntryIteration(int userIteration) {
         return userIteration > 0;
+    }
+
+    public static boolean isValidAlphabet(String userAlphabet) {
+
+        // check length and only letters in lower case
+        if (!userAlphabet.matches("[a-z]{26}")) return false;
+
+        for (int i = 0; i < userAlphabet.length(); i++) {
+            char currentChar = userAlphabet.charAt(i);
+            // check duplicate with index
+            int potentialDuplicateIndex = userAlphabet.indexOf(currentChar, i + 1);
+            if (potentialDuplicateIndex != -1) {
+                // duplicate found
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public static void main(String[] args) {
@@ -210,13 +260,16 @@ public class SubstitutionCipher {
 
         int userEntryIterations = promptUserIterations(scanner);
 
+        String userSubstitutionAlphabet = promptUserAlphabet(scanner);
+
 
         if (userEntryAction.equals(CIPHER_TEXT)) {
-            String userTextEncrypted = cipher(userEntryText, latinAlphabet, substitutionAlphabet, userEntryIterations);
+            String userTextEncrypted = cipher(userEntryText, latinAlphabet, userSubstitutionAlphabet, userEntryIterations);
             System.out.println(userTextEncrypted);
         }
         else if (userEntryAction.equals(DECIPHER_TEXT)){
-            String userTextDecrypted = decipher(userEntryText, latinAlphabet, substitutionAlphabet, userEntryIterations);
+            // Decipher = cipher while swapping order of the two alphabet
+            String userTextDecrypted = cipher(userEntryText, userSubstitutionAlphabet, latinAlphabet, userEntryIterations);
             System.out.println(userTextDecrypted);
         }
         else {
