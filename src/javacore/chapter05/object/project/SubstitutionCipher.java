@@ -28,8 +28,6 @@ public class SubstitutionCipher {
     public static final String ITERATION = "iteration";
     public static final String ALPHABET = "alphabet";
 
-    public static final int ALPHABET_LENGTH = 26;
-
     public static final int LIMIT_ATTEMPTS = 5;
 
     public static String cipher(String textToEncrypt, String alphabet, String substitutionAlphabet, int cipherIterations) {
