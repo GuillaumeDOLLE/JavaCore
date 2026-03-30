@@ -104,7 +104,7 @@ public class SubstitutionCipher {
             return scan.nextLine().toLowerCase();
         }
 
-        if (type.equals(ACTION)) {
+        if (type.equals(ACTION) || type.equals(ALPHABET)) {
             return scan.nextLine().toLowerCase().trim();
         }
 
@@ -122,10 +122,6 @@ public class SubstitutionCipher {
                 // null to tell invalid entry
                 return null;
             }
-        }
-
-        if (type.equals(ALPHABET)) {
-            return scan.nextLine().toLowerCase().trim();
         }
 
         return null;
