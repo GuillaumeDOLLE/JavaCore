@@ -4,6 +4,14 @@ import java.util.Scanner;
 
 public class SubstitutionCipher {
 
+    String alphabet;
+    String substitutionAlphabet;
+
+    public SubstitutionCipher(String alphabet, String substitutionAlphabet) {
+        this.alphabet = alphabet;
+        this.substitutionAlphabet = substitutionAlphabet;
+    }
+
     public static class PromptConfig {
         String startMessage;
         String errorMessage;
@@ -30,7 +38,7 @@ public class SubstitutionCipher {
 
     public static final int LIMIT_ATTEMPTS = 5;
 
-    public static String cipher(String textToEncrypt, String alphabet, String substitutionAlphabet, int cipherIterations) {
+    public String cipher(String textToEncrypt, String alphabet, String substitutionAlphabet, int cipherIterations) {
 
         for (int index = 0; index < cipherIterations; index++) {
             String tempEncryptedText = textToEncrypt;
@@ -41,7 +49,7 @@ public class SubstitutionCipher {
         return textToEncrypt;
     }
 
-    public static String cipher(String textToEncrypt, String alphabet, String substitutionAlphabet) {
+    public String cipher(String textToEncrypt, String alphabet, String substitutionAlphabet) {
         char currentChar = ' ';
         char currentSubChar = ' ';
         String currentLatinLetter = "";
@@ -73,31 +81,7 @@ public class SubstitutionCipher {
         return textToEncrypt;
     }
 
-    public static Object promptUser(Scanner scan, PromptConfig config) {
-        System.out.print(config.startMessage);
-
-        int attempts = 1;
-
-        while (attempts <= LIMIT_ATTEMPTS) {
-            Object value = readValue(scan, config.type);
-
-            if (isValid(value, config.type)) {
-                return value;
-            }
-
-            if (attempts == LIMIT_ATTEMPTS) {
-                System.out.print(config.endMessage);
-                return config.defaultValue;
-            }
-
-            System.out.print(config.errorMessage);
-            attempts++;
-        }
-
-        return config.defaultValue;
-    }
-
-    public static Object readValue(Scanner scan, String type) {
+    public Object readValue(Scanner scan, String type) {
         if (type.equals(TEXT)) {
             return scan.nextLine().toLowerCase();
         }
@@ -125,7 +109,7 @@ public class SubstitutionCipher {
         return null;
     }
 
-    public static boolean isValid(Object value, String type) {
+    public boolean isValid(Object value, String type) {
         if (type.equals(TEXT)) {
             return isValidEntryText((String) value);
         }
@@ -148,7 +132,31 @@ public class SubstitutionCipher {
         return false;
     }
 
-    public static String promptUserText(Scanner scan) {
+    public Object promptUser(Scanner scan, PromptConfig config) {
+        System.out.print(config.startMessage);
+
+        int attempts = 1;
+
+        while (attempts <= LIMIT_ATTEMPTS) {
+            Object value = readValue(scan, config.type);
+
+            if (isValid(value, config.type)) {
+                return value;
+            }
+
+            if (attempts == LIMIT_ATTEMPTS) {
+                System.out.print(config.endMessage);
+                return config.defaultValue;
+            }
+
+            System.out.print(config.errorMessage);
+            attempts++;
+        }
+
+        return config.defaultValue;
+    }
+
+    public String promptUserText(Scanner scan) {
         PromptConfig config = new PromptConfig(
                 "Veuillez entrer un texte en minuscule : ",
                 "Ce texte est invalide, veuillez saisir un nouveau texte : ",
@@ -160,7 +168,7 @@ public class SubstitutionCipher {
         return (String) promptUser(scan, config);
     }
 
-    public static String promptUserAction(Scanner scan) {
+    public String promptUserAction(Scanner scan) {
         PromptConfig config = new PromptConfig(
                 "Veuillez choisir l'action à effectuer (c pour chiffrement / d pour déchiffrement) : ",
                 "Cette action est invalide, veuillez saisir une nouvelle action : ",
@@ -173,7 +181,7 @@ public class SubstitutionCipher {
 
     }
 
-    public static int promptUserIterations(Scanner scan) {
+    public int promptUserIterations(Scanner scan) {
         PromptConfig config = new PromptConfig(
                 "Veuillez saisir un nombre afin de connaitre le nombre d'itérations nécessaires pour votre action : ",
                 "Cette valeur est invalide, veuillez saisir une nouvelle valeur : ",
@@ -185,7 +193,7 @@ public class SubstitutionCipher {
         return (int) promptUser(scan, config);
     }
 
-    public static String promptUserAlphabet(Scanner scan) {
+    public String promptUserAlphabet(Scanner scan) {
         PromptConfig config = new PromptConfig(
                 "Veuillez saisir un alphabet de substitution, veillez à entrer les 26 caractères" +
                         " de l'alphabet dans l'ordre que vous voulez, sans faire de doublons : ",
@@ -199,19 +207,19 @@ public class SubstitutionCipher {
 
     }
 
-    public static boolean isValidEntryText(String userText) {
+    public boolean isValidEntryText(String userText) {
         return userText.matches("[a-zA-Z ]*");
     }
 
-    public static boolean isValidEntryAction(String userAction) {
+    public boolean isValidEntryAction(String userAction) {
         return userAction.equals(CIPHER_TEXT) || userAction.equals(DECIPHER_TEXT);
     }
 
-    public static boolean isValidEntryIteration(int userIteration) {
+    public boolean isValidEntryIteration(int userIteration) {
         return userIteration > 0;
     }
 
-    public static boolean isValidAlphabet(String userAlphabet) {
+    public boolean isValidAlphabet(String userAlphabet) {
 
         // check length and only letters in lower case
         if (!userAlphabet.matches("[a-z]{26}")) return false;
@@ -247,24 +255,27 @@ public class SubstitutionCipher {
         String textToEncrypt = "ce message secret ne doit pas arriver entre de mauvaises mains !";
 
         // Ecrivez le code ci-dessous
+        SubstitutionCipher subCipher1 = new SubstitutionCipher(latinAlphabet, substitutionAlphabet);
+
         Scanner scanner = new Scanner(System.in);
-        String userEntryText = promptUserText(scanner);
+        String userEntryText = subCipher1.promptUserText(scanner);
 
-        String userEntryAction = promptUserAction(scanner);
+        String userEntryAction = subCipher1.promptUserAction(scanner);
 
-        int userEntryIterations = promptUserIterations(scanner);
+        int userEntryIterations = subCipher1.promptUserIterations(scanner);
 
-        String userSubstitutionAlphabet = promptUserAlphabet(scanner);
+        subCipher1.substitutionAlphabet = subCipher1.promptUserAlphabet(scanner);
+
 
 
         if (userEntryAction.equals(CIPHER_TEXT)) {
-            String userTextEncrypted = cipher(userEntryText, latinAlphabet, userSubstitutionAlphabet, userEntryIterations);
-            System.out.println(userTextEncrypted);
+            String userTextEncrypted = subCipher1.cipher(userEntryText, subCipher1.alphabet, subCipher1.substitutionAlphabet, userEntryIterations);
+            System.out.println("Voici le texte \"" + userEntryText + "\" chiffré : " + userTextEncrypted);
         }
         else if (userEntryAction.equals(DECIPHER_TEXT)){
             // Decipher = cipher while swapping order of the two alphabet
-            String userTextDecrypted = cipher(userEntryText, userSubstitutionAlphabet, latinAlphabet, userEntryIterations);
-            System.out.println(userTextDecrypted);
+            String userTextDecrypted = subCipher1.cipher(userEntryText, subCipher1.substitutionAlphabet, subCipher1.alphabet, userEntryIterations);
+            System.out.println("Voici le texte \"" + userEntryText + "\" déchiffré : " + userTextDecrypted);
         }
         else {
             System.err.print("Cette action n'est pas prévue par le programme.");
