@@ -67,3 +67,55 @@ public class PrimeNumberSearcherV4 {
     }
 
 }
+
+/**
+ *
+ * CODE IA
+ *
+ * public class CribleEratosthene {
+ *
+ *     public static boolean[] crible(int limite) {
+ *         boolean[] estPremier = new boolean[limite + 1];
+ *
+ *         // On met tout à true au départ
+ *         Arrays.fill(estPremier, true);
+ *
+ *         // 0 et 1 ne sont pas premiers
+ *         if (limite >= 0) estPremier[0] = false;
+ *         if (limite >= 1) estPremier[1] = false;
+ *
+ *         // Crible
+ *         for (int i = 2; i * i <= limite; i++) {
+ *             if (estPremier[i]) {
+ *                 for (int j = i * i; j <= limite; j += i) {
+ *                     estPremier[j] = false;
+ *                 }
+ *             }
+ *         }
+ *
+ *         return estPremier;
+ *     }
+ *
+ *     public static void main(String[] args) {
+ *         int limite = 100;
+ *         boolean[] estPremier = crible(limite);
+ *
+ *         System.out.println("Nombres premiers jusqu'à " + limite + " :");
+ *         for (int i = 2; i <= limite; i++) {
+ *             if (estPremier[i]) {
+ *                 System.out.print(i + " ");
+ *             }
+ *         }
+ *     }
+ * }
+ *
+ *
+ *
+ * Différences avec le i * i plus précis quand on travaille avec des entiers alors que Math.sqrt implique les double
+ *
+ * Je dois rajouter <= à la place de < dans mes conditions
+ *
+ * Initialisation du tableau -> Arrays.fill(potentialPrimeNumbers, true) au lieu de ma boucle
+ *
+ * Nommage OK mais un peu long -> boolean[] isPrime;
+ */
