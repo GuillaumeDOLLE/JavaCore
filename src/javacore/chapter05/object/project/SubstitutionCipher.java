@@ -26,13 +26,85 @@ public class SubstitutionCipher {
             this.type = type;
             this.defaultValue = defaultValue;
         }
+
+        private static PromptConfig buildConfig(PromptPreset preset) {
+            return new PromptConfig(
+                    preset.startMsg,
+                    preset.errorMsg,
+                    preset.endMsg,
+                    preset.entryType,
+                    preset.defaultVal
+            );
+        }
+
+        public static PromptConfig textConfig() {
+            return buildConfig(PromptPreset.TEXT);
+        }
+
+        public static PromptConfig actionConfig() {
+            return buildConfig(PromptPreset.ACTION);
+        }
+
+        public static PromptConfig iterationConfig() {
+            return buildConfig(PromptPreset.ITERATION);
+        }
+
+        public static PromptConfig alphabetConfig() {
+            return buildConfig(PromptPreset.ALPHABET);
+        }
+
+        private enum PromptPreset {
+            TEXT(
+                    "Veuillez entrer un texte en minuscule : ",
+                    "Ce texte est invalide, veuillez saisir un nouveau texte : ",
+                    "\nVous avez épuisé toutes vos tentatives, au revoir.",
+                    EntryType.TEXT,
+                    null
+            ),
+            ACTION(
+                    "Veuillez choisir l'action à effectuer (c pour chiffrement / d pour déchiffrement) : ",
+                    "Cette action est invalide, veuillez saisir une nouvelle action : ",
+                    "\n Vous avez épuisé toutes vos tentatives, au revoir.",
+                    EntryType.ACTION,
+                    ""
+            ),
+            ITERATION(
+                    "Veuillez saisir un nombre afin de connaitre le nombre d'itérations nécessaires pour votre action : ",
+                    "Cette valeur est invalide, veuillez saisir une nouvelle valeur : ",
+                    "\nVous avez épuisé toutes vos tentatives, le nombre d'itérations par défaut va être appliqué (1).",
+                    EntryType.ITERATION,
+                    1
+            ),
+            ALPHABET(
+                    "Veuillez saisir un alphabet de substitution, veillez à entrer les 26 caractères de l'alphabet dans l'ordre que vous voulez, sans faire de doublons : ",
+                    "Cet alphabet est invalide, veuillez saisir un nouvel alphabet : ",
+                    "\nVous avez épuisé toutes vos tentatives, au revoir.",
+                    EntryType.ALPHABET,
+                    ""
+            );
+
+            final String startMsg;
+            final String errorMsg;
+            final String endMsg;
+            final EntryType entryType;
+            final Object defaultVal;
+
+            PromptPreset(String startMessage, String errorMessage, String endMessage, EntryType entryType, Object defaultValue) {
+                this.startMsg = startMessage;
+                this.errorMsg = errorMessage;
+                this.endMsg = endMessage;
+                this.entryType = entryType;
+                this.defaultVal = defaultValue;
+
+            }
+        }
     }
 
     public enum EntryType {
         TEXT,
         ACTION,
         ITERATION,
-        ALPHABET
+        ALPHABET,
     }
     public static final String CIPHER_TEXT = "c";
     public static final String DECIPHER_TEXT = "d";
@@ -155,51 +227,26 @@ public class SubstitutionCipher {
     }
 
     public String promptUserText(Scanner scan) {
-        PromptConfig config = new PromptConfig(
-                "Veuillez entrer un texte en minuscule : ",
-                "Ce texte est invalide, veuillez saisir un nouveau texte : ",
-                "\nVous avez épuisé toutes vos tentatives, au revoir.",
-                EntryType.TEXT,
-                null
-        );
+        PromptConfig config = PromptConfig.textConfig();
 
         return (String) promptUser(scan, config);
     }
 
     public String promptUserAction(Scanner scan) {
-        PromptConfig config = new PromptConfig(
-                "Veuillez choisir l'action à effectuer (c pour chiffrement / d pour déchiffrement) : ",
-                "Cette action est invalide, veuillez saisir une nouvelle action : ",
-                "\n Vous avez épuisé toutes vos tentatives, au revoir.",
-                EntryType.ACTION,
-                ""
-        );
+        PromptConfig config = PromptConfig.actionConfig();
 
         return (String) promptUser(scan, config);
 
     }
 
     public int promptUserIterations(Scanner scan) {
-        PromptConfig config = new PromptConfig(
-                "Veuillez saisir un nombre afin de connaitre le nombre d'itérations nécessaires pour votre action : ",
-                "Cette valeur est invalide, veuillez saisir une nouvelle valeur : ",
-                "\nVous avez épuisé toutes vos tentatives, le nombre d'itérations par défaut va être appliqué (1).",
-                EntryType.ITERATION,
-                1
-        );
+        PromptConfig config = PromptConfig.iterationConfig();
 
         return (int) promptUser(scan, config);
     }
 
     public String promptUserAlphabet(Scanner scan) {
-        PromptConfig config = new PromptConfig(
-                "Veuillez saisir un alphabet de substitution, veillez à entrer les 26 caractères" +
-                        " de l'alphabet dans l'ordre que vous voulez, sans faire de doublons : ",
-                "Cet alphabet est invalide, veuillez saisir un nouvel alphabet : ",
-                "\nVous avez épuisé toutes vos tentatives, au revoir.",
-                EntryType.ALPHABET,
-                ""
-        );
+        PromptConfig config = PromptConfig.alphabetConfig();
 
         return (String) promptUser(scan, config);
 
