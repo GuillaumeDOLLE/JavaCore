@@ -16,10 +16,10 @@ public class SubstitutionCipher {
         String startMessage;
         String errorMessage;
         String endMessage;
-        String type;
+        EntryType type;
         Object defaultValue;
 
-        public PromptConfig(String startMessage, String errorMessage, String endMessage, String type, Object defaultValue) {
+        public PromptConfig(String startMessage, String errorMessage, String endMessage, EntryType type, Object defaultValue) {
             this.startMessage = startMessage;
             this.errorMessage = errorMessage;
             this.endMessage = endMessage;
@@ -28,13 +28,14 @@ public class SubstitutionCipher {
         }
     }
 
+    public enum EntryType {
+        TEXT,
+        ACTION,
+        ITERATION,
+        ALPHABET
+    }
     public static final String CIPHER_TEXT = "c";
     public static final String DECIPHER_TEXT = "d";
-
-    public static final String TEXT = "text";
-    public static final String ACTION = "action";
-    public static final String ITERATION = "iteration";
-    public static final String ALPHABET = "alphabet";
 
     public static final int LIMIT_ATTEMPTS = 5;
 
@@ -81,16 +82,16 @@ public class SubstitutionCipher {
         return textToEncrypt;
     }
 
-    public Object readValue(Scanner scan, String type) {
-        if (type.equals(TEXT)) {
+    public Object readValue(Scanner scan, EntryType type) {
+        if (type == EntryType.TEXT) {
             return scan.nextLine().toLowerCase();
         }
 
-        if (type.equals(ACTION) || type.equals(ALPHABET)) {
+        if (type == EntryType.ACTION || type == EntryType.ALPHABET) {
             return scan.nextLine().toLowerCase().trim();
         }
 
-        if (type.equals(ITERATION)) {
+        if (type == EntryType.ITERATION) {
             // has to be an integer
             if (scan.hasNextInt()) {
                 int value = scan.nextInt();
@@ -109,23 +110,20 @@ public class SubstitutionCipher {
         return null;
     }
 
-    public boolean isValid(Object value, String type) {
-        if (type.equals(TEXT)) {
+    public boolean isValid(Object value, EntryType type) {
+        if (type == EntryType.TEXT) {
             return isValidEntryText((String) value);
         }
 
-        if (type.equals(ACTION)) {
+        if (type == EntryType.ACTION) {
             return isValidEntryAction((String) value);
         }
 
-        if (type.equals(ITERATION)) {
-            if (value == null) {
-                return false;
-            }
-            return isValidEntryIteration((int) value);
+        if (type == EntryType.ITERATION) {
+            return value == null ? false : isValidEntryIteration((Integer) value);
         }
 
-        if (type.equals(ALPHABET)) {
+        if (type == EntryType.ALPHABET) {
             return isValidAlphabet((String) value);
         }
 
@@ -161,7 +159,7 @@ public class SubstitutionCipher {
                 "Veuillez entrer un texte en minuscule : ",
                 "Ce texte est invalide, veuillez saisir un nouveau texte : ",
                 "\nVous avez épuisé toutes vos tentatives, au revoir.",
-                TEXT,
+                EntryType.TEXT,
                 null
         );
 
@@ -173,7 +171,7 @@ public class SubstitutionCipher {
                 "Veuillez choisir l'action à effectuer (c pour chiffrement / d pour déchiffrement) : ",
                 "Cette action est invalide, veuillez saisir une nouvelle action : ",
                 "\n Vous avez épuisé toutes vos tentatives, au revoir.",
-                ACTION,
+                EntryType.ACTION,
                 ""
         );
 
@@ -186,7 +184,7 @@ public class SubstitutionCipher {
                 "Veuillez saisir un nombre afin de connaitre le nombre d'itérations nécessaires pour votre action : ",
                 "Cette valeur est invalide, veuillez saisir une nouvelle valeur : ",
                 "\nVous avez épuisé toutes vos tentatives, le nombre d'itérations par défaut va être appliqué (1).",
-                ITERATION,
+                EntryType.ITERATION,
                 1
         );
 
@@ -199,7 +197,7 @@ public class SubstitutionCipher {
                         " de l'alphabet dans l'ordre que vous voulez, sans faire de doublons : ",
                 "Cet alphabet est invalide, veuillez saisir un nouvel alphabet : ",
                 "\nVous avez épuisé toutes vos tentatives, au revoir.",
-                ALPHABET,
+                EntryType.ALPHABET,
                 ""
         );
 
