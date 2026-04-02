@@ -311,20 +311,24 @@ public class SubstitutionCipher {
 
         subCipher1.substitutionAlphabet = subCipher1.promptUserAlphabet(scanner);
 
-
+        String alphabet = "";
+        String subAlphabet = "";
 
         if (userEntryAction.equals(CIPHER_TEXT)) {
-            String userTextEncrypted = subCipher1.cipher(userEntryText, subCipher1.alphabet, subCipher1.substitutionAlphabet, userEntryIterations);
-            System.out.println("Voici le texte \"" + userEntryText + "\" chiffré : " + userTextEncrypted);
+            alphabet = subCipher1.alphabet;
+            subAlphabet = subCipher1.substitutionAlphabet;
         }
         else if (userEntryAction.equals(DECIPHER_TEXT)){
             // Decipher = cipher while swapping order of the two alphabet
-            String userTextDecrypted = subCipher1.cipher(userEntryText, subCipher1.substitutionAlphabet, subCipher1.alphabet, userEntryIterations);
-            System.out.println("Voici le texte \"" + userEntryText + "\" déchiffré : " + userTextDecrypted);
+            alphabet = subCipher1.substitutionAlphabet;
+            subAlphabet = subCipher1.alphabet;
         }
         else {
             System.err.print("Cette action n'est pas prévue par le programme.");
         }
+
+        String userTextCrypted = subCipher1.cipher(userEntryText, alphabet, subAlphabet, userEntryIterations);
+        System.out.println("Voici le texte \"" + userEntryText + "\" chiffré : " + userTextCrypted);
 
     }
 
