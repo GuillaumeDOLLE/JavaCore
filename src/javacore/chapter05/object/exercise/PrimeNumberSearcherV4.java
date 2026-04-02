@@ -44,23 +44,17 @@ public class PrimeNumberSearcherV4 {
         int limitNumber = 10_000;
 
         boolean[] potentialPrimeNumbers = new boolean[limitNumber + 1];
-        for (int i = 0; i < potentialPrimeNumbers.length; i++) {
-            potentialPrimeNumbers[i] = true;
-        }
-
-        potentialPrimeNumbers[0] = false;
-        potentialPrimeNumbers[1] = false;
 
         for (int i = 2; i < Math.sqrt(potentialPrimeNumbers.length); i++) {
-            if (potentialPrimeNumbers[i]) {
+            if (!potentialPrimeNumbers[i]) {
                 for (int j = i * i; j < potentialPrimeNumbers.length; j += i) {
-                    potentialPrimeNumbers[j] = false;
+                    potentialPrimeNumbers[j] = !potentialPrimeNumbers[i];
                 }
             }
         }
 
         for (int i = 2; i < potentialPrimeNumbers.length; i++) {
-            if (potentialPrimeNumbers[i]) {
+            if (!potentialPrimeNumbers[i]) {
                 System.out.println("prime number : " + i);
             }
         }
