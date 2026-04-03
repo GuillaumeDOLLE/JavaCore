@@ -35,6 +35,18 @@ public class GradesAnalyzer {
         return maxGrade;
     }
 
+    public static int getGradeCountAboveThreshold(int[] gradesArray, int threshold) {
+        int count = 0;
+
+        for (int grade : gradesArray) {
+            if (grade > threshold) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
     public static void main(String[] args) {
 
         System.out.print("Veuillez saisir le nombre de notes que vous souhaitez enregistrer entre 2 et 30 notes : ");
@@ -74,6 +86,11 @@ public class GradesAnalyzer {
 
             double maxGrade = getMaxGrade(gradesArray);
             System.out.println("Note la plus haute contenue dans le tableau : " + maxGrade);
+
+            int threshold = 12;
+            int gradeCountAboveThreshold = getGradeCountAboveThreshold(gradesArray, threshold);
+            double gradeCountAboveThresholdRate = (double) gradeCountAboveThreshold / gradesArray.length * 100.0;
+            System.out.println("Nombres de notes > " + threshold + " = " + gradeCountAboveThreshold + " (soit " + gradeCountAboveThresholdRate + "%)");
         }
 
     }
