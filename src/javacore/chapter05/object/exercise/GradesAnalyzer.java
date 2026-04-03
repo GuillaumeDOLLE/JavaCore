@@ -47,6 +47,16 @@ public class GradesAnalyzer {
         return count;
     }
 
+    public static int getGradeCountBetweenRange(int[] gradesArray, int from, int to) {
+        int count = 0;
+        for (int grade : gradesArray) {
+            if (grade >= from && grade <= to) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     public static void main(String[] args) {
 
         System.out.print("Veuillez saisir le nombre de notes que vous souhaitez enregistrer entre 2 et 30 notes : ");
@@ -89,8 +99,14 @@ public class GradesAnalyzer {
 
             int threshold = 12;
             int gradeCountAboveThreshold = getGradeCountAboveThreshold(gradesArray, threshold);
-            double gradeCountAboveThresholdRate = (double) gradeCountAboveThreshold / gradesArray.length * 100.0;
-            System.out.println("Nombres de notes > " + threshold + " = " + gradeCountAboveThreshold + " (soit " + gradeCountAboveThresholdRate + "%)");
+            double gradeCountAboveThresholdPercent = (double) gradeCountAboveThreshold / gradesArray.length * 100;
+            System.out.println("Nombres de notes > " + threshold + " = " + gradeCountAboveThreshold + " (soit " + gradeCountAboveThresholdPercent + "%)");
+
+            int from = 0;
+            int to = 5;
+            int gradeCountBetweenRange = getGradeCountBetweenRange(gradesArray, from, to);
+            double gradeCountBetweenRangePercent = (double) gradeCountBetweenRange / gradesArray.length * 100;
+            System.out.println("Nombre de notes dans l'intervalle [" + from + " - " + to + "] = " + gradeCountBetweenRange + " (soit " + gradeCountBetweenRangePercent + "%)");
         }
 
     }
