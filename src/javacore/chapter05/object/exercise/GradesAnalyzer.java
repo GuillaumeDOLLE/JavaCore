@@ -13,6 +13,17 @@ public class GradesAnalyzer {
         return sum / gradesArray.length;
     }
 
+    public static double getMinGrade(int[] gradesArray) {
+        double minGrade = gradesArray[0];
+        for (int grade : gradesArray) {
+            if (grade < minGrade) {
+                minGrade = grade;
+            }
+        }
+
+        return minGrade;
+    }
+
     public static void main(String[] args) {
 
         System.out.print("Veuillez saisir le nombre de notes que vous souhaitez enregistrer entre 2 et 30 notes : ");
@@ -44,8 +55,10 @@ public class GradesAnalyzer {
             }
 
             double average = getAverage(gradesArray);
+            double minGrade = getMinGrade(gradesArray);
             System.out.println(Arrays.toString(gradesArray));
             System.out.println("Moyenne générale : " + average);
+            System.out.println("Note la plus basse contenue dans le tableau : " + minGrade);
         }
 
     }
