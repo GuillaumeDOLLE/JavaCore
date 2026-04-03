@@ -5,6 +5,14 @@ import java.util.Scanner;
 
 public class GradesAnalyzer {
 
+    public static double getAverage(int[] gradesArray) {
+        double sum = 0;
+        for (double grade : gradesArray) {
+            sum += grade;
+        }
+        return sum / gradesArray.length;
+    }
+
     public static void main(String[] args) {
 
         System.out.print("Veuillez saisir le nombre de notes que vous souhaitez enregistrer entre 2 et 30 notes : ");
@@ -35,7 +43,9 @@ public class GradesAnalyzer {
                 }
             }
 
+            double average = getAverage(gradesArray);
             System.out.println(Arrays.toString(gradesArray));
+            System.out.println("Moyenne générale : " + average);
         }
 
     }
