@@ -61,29 +61,44 @@ public class GradesAnalyzer {
 
         System.out.print("Veuillez saisir le nombre de notes que vous souhaitez enregistrer entre 2 et 30 notes : ");
         try(Scanner scanner = new Scanner(System.in)) {
-            int gradesNumber = 0;
-            if (scanner.hasNextInt()) {
-                gradesNumber = scanner.nextInt();
-                if (gradesNumber < 2 || gradesNumber > 30) {
-                    System.err.print("Vous n'avez pas saisie un nombre de notes valide.");
+            int potentialGradesNumber = 0;
+            boolean isValidEntry = false;
+            while (!isValidEntry) {
+                String userEntry = scanner.nextLine();
+                try {
+                    potentialGradesNumber = Integer.parseInt(userEntry);
+
+                    if (potentialGradesNumber < 2 || potentialGradesNumber > 30) {
+                        System.err.println("Vous n'avez pas saisie un nombre de notes valide.");
+                    }
+                    else {
+                        isValidEntry = true;
+                    }
+                } catch (NumberFormatException err) {
+                    System.out.println("Il faut saisir un nombre, et pas une autre valeur.\nVeuillez réessayer : ");
                 }
-            } else {
-                System.err.print("Il faut saisir un nombre, et pas une autre valeur.");
             }
 
-            int[] gradesArray = new int[gradesNumber];
-
+            int[] gradesArray = new int[potentialGradesNumber];
 
             System.out.print("Veuillez maintenant saisir les notes que vous voulez enregistrer (entre 0 et 20) : ");
-            for (int gradesIndex = 0; gradesIndex < gradesArray.length; gradesIndex++) {
-                if (scanner.hasNextInt()) {
-                    gradesArray[gradesIndex] = scanner.nextInt();
-                    if (gradesArray[gradesIndex] < 0 || gradesArray[gradesIndex] > 20) {
-                        System.err.print("Vous n'avez pas saisie une note valide.");
+
+            int gradesIndex = 0;
+            while (gradesIndex < gradesArray.length) {
+                String userPotentialGrade = scanner.nextLine();
+
+                try {
+                    int potentialNextGrade = Integer.parseInt(userPotentialGrade);
+
+                    if (potentialNextGrade < 0 || potentialNextGrade > 20) {
+                        System.err.println("Vous n'avez pas saisie une note valide.");
                     }
-                }
-                else {
-                    System.err.print("Il faut saisir un nombre, et pas une autre valeur.");
+                    else {
+                        gradesArray[gradesIndex] = potentialNextGrade;
+                        gradesIndex++;
+                    }
+                } catch (NumberFormatException err) {
+                    System.err.println("Il faut saisir un nombre, et pas une autre valeur.");
                 }
             }
             System.out.println(Arrays.toString(gradesArray));
