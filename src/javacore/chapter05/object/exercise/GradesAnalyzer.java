@@ -75,7 +75,7 @@ public class GradesAnalyzer {
                         isValidEntry = true;
                     }
                 } catch (NumberFormatException err) {
-                    System.out.println("Il faut saisir un nombre, et pas une autre valeur.\nVeuillez réessayer : ");
+                    System.err.println("Il faut saisir un nombre, et pas une autre valeur.\nVeuillez réessayer : ");
                 }
             }
 
@@ -91,14 +91,14 @@ public class GradesAnalyzer {
                     int potentialNextGrade = Integer.parseInt(userPotentialGrade);
 
                     if (potentialNextGrade < 0 || potentialNextGrade > 20) {
-                        System.err.println("Vous n'avez pas saisie une note valide.");
+                        System.err.println("Vous n'avez pas saisie une note valide.\nVeuillez réessayer : ");
                     }
                     else {
                         gradesArray[gradesIndex] = potentialNextGrade;
                         gradesIndex++;
                     }
                 } catch (NumberFormatException err) {
-                    System.err.println("Il faut saisir un nombre, et pas une autre valeur.");
+                    System.err.println("Il faut saisir un nombre, et pas une autre valeur.\nVeuillez réessayer : ");
                 }
             }
             System.out.println(Arrays.toString(gradesArray));
