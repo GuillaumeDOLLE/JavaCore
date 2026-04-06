@@ -17,14 +17,12 @@ public class SubstitutionCipher {
         String errorMessage;
         String endMessage;
         EntryType type;
-        Object defaultValue;
 
-        public PromptConfig(String startMessage, String errorMessage, String endMessage, EntryType type, Object defaultValue) {
+        public PromptConfig(String startMessage, String errorMessage, String endMessage, EntryType type) {
             this.startMessage = startMessage;
             this.errorMessage = errorMessage;
             this.endMessage = endMessage;
             this.type = type;
-            this.defaultValue = defaultValue;
         }
 
         private static PromptConfig buildConfig(PromptPreset preset) {
@@ -32,8 +30,7 @@ public class SubstitutionCipher {
                     preset.startMsg,
                     preset.errorMsg,
                     preset.endMsg,
-                    preset.entryType,
-                    preset.defaultVal
+                    preset.entryType
             );
         }
 
@@ -58,44 +55,37 @@ public class SubstitutionCipher {
                     "Veuillez entrer un texte en minuscule : ",
                     "Ce texte est invalide, veuillez saisir un nouveau texte : ",
                     "\nVous avez épuisé toutes vos tentatives, au revoir.",
-                    EntryType.TEXT,
-                    null
+                    EntryType.TEXT
             ),
             ACTION(
                     "Veuillez choisir l'action à effectuer (c pour chiffrement / d pour déchiffrement) : ",
                     "Cette action est invalide, veuillez saisir une nouvelle action : ",
                     "\n Vous avez épuisé toutes vos tentatives, au revoir.",
-                    EntryType.ACTION,
-                    ""
+                    EntryType.ACTION
             ),
             ITERATION(
                     "Veuillez saisir un nombre afin de connaitre le nombre d'itérations nécessaires pour votre action : ",
                     "Cette valeur est invalide, veuillez saisir une nouvelle valeur : ",
                     "\nVous avez épuisé toutes vos tentatives, le nombre d'itérations par défaut va être appliqué (1).",
-                    EntryType.ITERATION,
-                    1
+                    EntryType.ITERATION
             ),
             ALPHABET(
                     "Veuillez saisir un alphabet de substitution, veillez à entrer les 26 caractères de l'alphabet dans l'ordre que vous voulez, sans faire de doublons : ",
                     "Cet alphabet est invalide, veuillez saisir un nouvel alphabet : ",
                     "\nVous avez épuisé toutes vos tentatives, au revoir.",
-                    EntryType.ALPHABET,
-                    ""
+                    EntryType.ALPHABET
             );
 
             final String startMsg;
             final String errorMsg;
             final String endMsg;
             final EntryType entryType;
-            final Object defaultVal;
 
-            PromptPreset(String startMessage, String errorMessage, String endMessage, EntryType entryType, Object defaultValue) {
+            PromptPreset(String startMessage, String errorMessage, String endMessage, EntryType entryType) {
                 this.startMsg = startMessage;
                 this.errorMsg = errorMessage;
                 this.endMsg = endMessage;
                 this.entryType = entryType;
-                this.defaultVal = defaultValue;
-
             }
         }
     }
@@ -202,6 +192,13 @@ public class SubstitutionCipher {
         return false;
     }
 
+    private int getDefaultValue(EntryType type) {
+        if (type == EntryType.ITERATION) {
+            return 1;
+        }
+        throw new IllegalStateException("Aucune valeur par défaut pour " + type);
+    }
+
     public Object promptUser(Scanner scan, PromptConfig config) {
         System.out.print(config.startMessage);
 
@@ -216,14 +213,14 @@ public class SubstitutionCipher {
 
             if (attempts == LIMIT_ATTEMPTS) {
                 System.out.print(config.endMessage);
-                return config.defaultValue;
+                return getDefaultValue(config.type);
             }
 
             System.out.print(config.errorMessage);
             attempts++;
         }
-
-        return config.defaultValue;
+        // should never happen
+        return getDefaultValue(config.type);
     }
 
     public String promptUserText(Scanner scan) {
@@ -303,22 +300,22 @@ public class SubstitutionCipher {
         SubstitutionCipher subCipher1 = new SubstitutionCipher(latinAlphabet, substitutionAlphabet);
 
         Scanner scanner = new Scanner(System.in);
-        String userEntryText = subCipher1.promptUserText(scanner);
+        String userTextToEncrypt = subCipher1.promptUserText(scanner);
 
-        String userEntryAction = subCipher1.promptUserAction(scanner);
+        String userCipherOrDecipher = subCipher1.promptUserAction(scanner);
 
-        int userEntryIterations = subCipher1.promptUserIterations(scanner);
+        int userCipherIterations = subCipher1.promptUserIterations(scanner);
 
         subCipher1.substitutionAlphabet = subCipher1.promptUserAlphabet(scanner);
 
         String alphabet = "";
         String subAlphabet = "";
 
-        if (userEntryAction.equals(CIPHER_TEXT)) {
+        if (userCipherOrDecipher.equals(CIPHER_TEXT)) {
             alphabet = subCipher1.alphabet;
             subAlphabet = subCipher1.substitutionAlphabet;
         }
-        else if (userEntryAction.equals(DECIPHER_TEXT)){
+        else if (userCipherOrDecipher.equals(DECIPHER_TEXT)){
             // Decipher = cipher while swapping order of the two alphabet
             alphabet = subCipher1.substitutionAlphabet;
             subAlphabet = subCipher1.alphabet;
@@ -327,8 +324,8 @@ public class SubstitutionCipher {
             System.err.print("Cette action n'est pas prévue par le programme.");
         }
 
-        String userTextCrypted = subCipher1.cipher(userEntryText, alphabet, subAlphabet, userEntryIterations);
-        System.out.println("Voici le texte \"" + userEntryText + "\" chiffré : " + userTextCrypted);
+        String userTextCrypted = subCipher1.cipher(userTextToEncrypt, alphabet, subAlphabet, userCipherIterations);
+        System.out.println("Voici le texte \"" + userTextToEncrypt + "\" chiffré : " + userTextCrypted);
 
     }
 
