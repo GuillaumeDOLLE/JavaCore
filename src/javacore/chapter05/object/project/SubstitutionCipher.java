@@ -1,5 +1,6 @@
 package javacore.chapter05.object.project;
 
+import java.util.Map;
 import java.util.Scanner;
 
 public class SubstitutionCipher {
@@ -17,12 +18,17 @@ public class SubstitutionCipher {
         String errorMessage;
         String endMessage;
         EntryType type;
+        int limitAttempts;
 
-        public PromptConfig(String startMessage, String errorMessage, String endMessage, EntryType type) {
+        public PromptConfig(String startMessage, String errorMessage, String endMessage, EntryType type, int limitAttempts) {
             this.startMessage = startMessage;
             this.errorMessage = errorMessage;
             this.endMessage = endMessage;
             this.type = type;
+            this.limitAttempts = limitAttempts;
+
+            // This instantly returns the exception from getDefaultValue because TEXT is the first type to get called
+//            this.getDefaultValue();
         }
 
         private static PromptConfig buildConfig(PromptPreset preset) {
@@ -30,7 +36,8 @@ public class SubstitutionCipher {
                     preset.startMsg,
                     preset.errorMsg,
                     preset.endMsg,
-                    preset.entryType
+                    preset.entryType,
+                    preset.limitAttempts
             );
         }
 
@@ -50,42 +57,74 @@ public class SubstitutionCipher {
             return buildConfig(PromptPreset.ALPHABET);
         }
 
+        public int getDefaultValue() {
+            if (type == EntryType.ITERATION) {
+                return 1;
+            }
+            throw new IllegalStateException("Aucune valeur par défaut pour " + type);
+        }
+
+        public boolean isValid(Object value) {
+            if (this.type == EntryType.TEXT) {
+                return isValidEntryText((String) value);
+            }
+            if (this.type == EntryType.ACTION) {
+                return isValidEntryAction((String) value);
+            }
+
+            if (this.type == EntryType.ITERATION) {
+                return value != null && isValidEntryIteration((Integer) value);
+            }
+
+            if (this.type == EntryType.ALPHABET) {
+                return isValidAlphabet((String) value);
+            }
+
+            return false;
+        }
+
         private enum PromptPreset {
             TEXT(
                     "Veuillez entrer un texte en minuscule : ",
                     "Ce texte est invalide, veuillez saisir un nouveau texte : ",
                     "\nVous avez épuisé toutes vos tentatives, au revoir.",
-                    EntryType.TEXT
+                    EntryType.TEXT,
+                    5
             ),
             ACTION(
                     "Veuillez choisir l'action à effectuer (c pour chiffrement / d pour déchiffrement) : ",
                     "Cette action est invalide, veuillez saisir une nouvelle action : ",
                     "\n Vous avez épuisé toutes vos tentatives, au revoir.",
-                    EntryType.ACTION
+                    EntryType.ACTION,
+                    5
             ),
             ITERATION(
                     "Veuillez saisir un nombre afin de connaitre le nombre d'itérations nécessaires pour votre action : ",
                     "Cette valeur est invalide, veuillez saisir une nouvelle valeur : ",
                     "\nVous avez épuisé toutes vos tentatives, le nombre d'itérations par défaut va être appliqué (1).",
-                    EntryType.ITERATION
+                    EntryType.ITERATION,
+                    5
             ),
             ALPHABET(
                     "Veuillez saisir un alphabet de substitution, veillez à entrer les 26 caractères de l'alphabet dans l'ordre que vous voulez, sans faire de doublons : ",
                     "Cet alphabet est invalide, veuillez saisir un nouvel alphabet : ",
                     "\nVous avez épuisé toutes vos tentatives, au revoir.",
-                    EntryType.ALPHABET
+                    EntryType.ALPHABET,
+                    5
             );
 
             final String startMsg;
             final String errorMsg;
             final String endMsg;
             final EntryType entryType;
+            final int limitAttempts;
 
-            PromptPreset(String startMessage, String errorMessage, String endMessage, EntryType entryType) {
+            PromptPreset(String startMessage, String errorMessage, String endMessage, EntryType entryType, int limitAttempts) {
                 this.startMsg = startMessage;
                 this.errorMsg = errorMessage;
                 this.endMsg = endMessage;
                 this.entryType = entryType;
+                this.limitAttempts = limitAttempts;
             }
         }
     }
@@ -98,8 +137,6 @@ public class SubstitutionCipher {
     }
     public static final String CIPHER_TEXT = "c";
     public static final String DECIPHER_TEXT = "d";
-
-    public static final int LIMIT_ATTEMPTS = 5;
 
     public String cipher(String textToEncrypt, String alphabet, String substitutionAlphabet, int cipherIterations) {
 
@@ -172,55 +209,28 @@ public class SubstitutionCipher {
         return null;
     }
 
-    public boolean isValid(Object value, EntryType type) {
-        if (type == EntryType.TEXT) {
-            return isValidEntryText((String) value);
-        }
-
-        if (type == EntryType.ACTION) {
-            return isValidEntryAction((String) value);
-        }
-
-        if (type == EntryType.ITERATION) {
-            return value == null ? false : isValidEntryIteration((Integer) value);
-        }
-
-        if (type == EntryType.ALPHABET) {
-            return isValidAlphabet((String) value);
-        }
-
-        return false;
-    }
-
-    private int getDefaultValue(EntryType type) {
-        if (type == EntryType.ITERATION) {
-            return 1;
-        }
-        throw new IllegalStateException("Aucune valeur par défaut pour " + type);
-    }
-
     public Object promptUser(Scanner scan, PromptConfig config) {
         System.out.print(config.startMessage);
 
         int attempts = 1;
 
-        while (attempts <= LIMIT_ATTEMPTS) {
+        while (attempts <= config.limitAttempts) {
             Object value = readValue(scan, config.type);
 
-            if (isValid(value, config.type)) {
+            if (config.isValid(value)) {
                 return value;
             }
 
-            if (attempts == LIMIT_ATTEMPTS) {
+            if (attempts >= config.limitAttempts) {
                 System.out.print(config.endMessage);
-                return getDefaultValue(config.type);
+                return config.getDefaultValue();
             }
 
             System.out.print(config.errorMessage);
             attempts++;
         }
         // should never happen
-        return getDefaultValue(config.type);
+        return null;
     }
 
     public String promptUserText(Scanner scan) {
@@ -249,19 +259,19 @@ public class SubstitutionCipher {
 
     }
 
-    public boolean isValidEntryText(String userText) {
+    public static boolean isValidEntryText(String userText) {
         return userText.matches("[a-zA-Z ]*");
     }
 
-    public boolean isValidEntryAction(String userAction) {
+    public static boolean isValidEntryAction(String userAction) {
         return userAction.equals(CIPHER_TEXT) || userAction.equals(DECIPHER_TEXT);
     }
 
-    public boolean isValidEntryIteration(int userIteration) {
+    public static boolean isValidEntryIteration(int userIteration) {
         return userIteration > 0;
     }
 
-    public boolean isValidAlphabet(String userAlphabet) {
+    public static boolean isValidAlphabet(String userAlphabet) {
 
         // check length and only letters in lower case
         if (!userAlphabet.matches("[a-z]{26}")) return false;
