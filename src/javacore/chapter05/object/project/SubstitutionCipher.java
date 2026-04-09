@@ -1,6 +1,5 @@
 package javacore.chapter05.object.project;
 
-import java.util.Map;
 import java.util.Scanner;
 
 public class SubstitutionCipher {
@@ -20,7 +19,7 @@ public class SubstitutionCipher {
         EntryType type;
         int limitAttempts;
 
-        public PromptConfig(String startMessage, String errorMessage, String endMessage, EntryType type, int limitAttempts) {
+        private PromptConfig(String startMessage, String errorMessage, String endMessage, EntryType type, int limitAttempts) {
             this.startMessage = startMessage;
             this.errorMessage = errorMessage;
             this.endMessage = endMessage;
@@ -41,20 +40,13 @@ public class SubstitutionCipher {
             );
         }
 
-        public static PromptConfig textConfig() {
-            return buildConfig(PromptPreset.TEXT);
-        }
-
-        public static PromptConfig actionConfig() {
-            return buildConfig(PromptPreset.ACTION);
-        }
-
-        public static PromptConfig iterationConfig() {
-            return buildConfig(PromptPreset.ITERATION);
-        }
-
-        public static PromptConfig alphabetConfig() {
-            return buildConfig(PromptPreset.ALPHABET);
+        public static PromptConfig fromEntryType(EntryType type) {
+            return switch (type) {
+                case TEXT -> buildConfig(PromptPreset.TEXT);
+                case ACTION -> buildConfig(PromptPreset.ACTION);
+                case ITERATION -> buildConfig(PromptPreset.ITERATION);
+                case ALPHABET -> buildConfig(PromptPreset.ALPHABET);
+            };
         }
 
         public int getDefaultValue() {
@@ -65,22 +57,26 @@ public class SubstitutionCipher {
         }
 
         public boolean isValid(Object value) {
-            if (this.type == EntryType.TEXT) {
-                return isValidEntryText((String) value);
-            }
-            if (this.type == EntryType.ACTION) {
-                return isValidEntryAction((String) value);
-            }
+            return switch (this.type) {
+                case EntryType.TEXT -> isValidEntryText((String) value);
+                case EntryType.ACTION -> isValidEntryAction((String) value);
+                case EntryType.ITERATION -> value != null && isValidEntryIteration((Integer) value);
+                case EntryType.ALPHABET -> isValidAlphabet((String) value);
+            };
 
-            if (this.type == EntryType.ITERATION) {
-                return value != null && isValidEntryIteration((Integer) value);
-            }
+//            switch (this.type) {
+//                case EntryType.TEXT:
+//                    return isValidEntryText((String) value);
+//                case EntryType.ACTION:
+//                    return isValidEntryAction((String) value);
+//                case EntryType.ITERATION:
+//                    return value != null && isValidEntryIteration((Integer) value);
+//                case EntryType.ALPHABET:
+//                    return isValidAlphabet((String) value);
+//            }
+//
+//            throw new IllegalStateException("Unexpected EntryType : " + this.type);
 
-            if (this.type == EntryType.ALPHABET) {
-                return isValidAlphabet((String) value);
-            }
-
-            return false;
         }
 
         private enum PromptPreset {
@@ -221,39 +217,39 @@ public class SubstitutionCipher {
                 return value;
             }
 
-            if (attempts >= config.limitAttempts) {
-                System.out.print(config.endMessage);
-                return config.getDefaultValue();
+            if (attempts <= config.limitAttempts) {
+                System.out.print(config.errorMessage);
             }
-
-            System.out.print(config.errorMessage);
+            else {
+                System.out.print(config.endMessage);
+            }
             attempts++;
         }
-        // should never happen
-        return null;
+
+        return config.getDefaultValue();
     }
 
     public String promptUserText(Scanner scan) {
-        PromptConfig config = PromptConfig.textConfig();
+        PromptConfig config = PromptConfig.fromEntryType(EntryType.TEXT);
 
         return (String) promptUser(scan, config);
     }
 
     public String promptUserAction(Scanner scan) {
-        PromptConfig config = PromptConfig.actionConfig();
+        PromptConfig config = PromptConfig.fromEntryType(EntryType.ACTION);
 
         return (String) promptUser(scan, config);
 
     }
 
     public int promptUserIterations(Scanner scan) {
-        PromptConfig config = PromptConfig.iterationConfig();
+        PromptConfig config = PromptConfig.fromEntryType(EntryType.ITERATION);
 
         return (int) promptUser(scan, config);
     }
 
     public String promptUserAlphabet(Scanner scan) {
-        PromptConfig config = PromptConfig.alphabetConfig();
+        PromptConfig config = PromptConfig.fromEntryType(EntryType.ALPHABET);
 
         return (String) promptUser(scan, config);
 
