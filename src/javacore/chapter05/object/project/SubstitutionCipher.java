@@ -205,7 +205,8 @@ public class SubstitutionCipher {
         return null;
     }
 
-    public Object promptUser(Scanner scan, PromptConfig config) {
+    public Object promptUser(Scanner scan, EntryType type) {
+        PromptConfig config = PromptConfig.fromEntryType(type);
         System.out.print(config.startMessage);
 
         int attempts = 1;
@@ -227,32 +228,6 @@ public class SubstitutionCipher {
         }
 
         return config.getDefaultValue();
-    }
-
-    public String promptUserText(Scanner scan) {
-        PromptConfig config = PromptConfig.fromEntryType(EntryType.TEXT);
-
-        return (String) promptUser(scan, config);
-    }
-
-    public String promptUserAction(Scanner scan) {
-        PromptConfig config = PromptConfig.fromEntryType(EntryType.ACTION);
-
-        return (String) promptUser(scan, config);
-
-    }
-
-    public int promptUserIterations(Scanner scan) {
-        PromptConfig config = PromptConfig.fromEntryType(EntryType.ITERATION);
-
-        return (int) promptUser(scan, config);
-    }
-
-    public String promptUserAlphabet(Scanner scan) {
-        PromptConfig config = PromptConfig.fromEntryType(EntryType.ALPHABET);
-
-        return (String) promptUser(scan, config);
-
     }
 
     public static boolean isValidEntryText(String userText) {
@@ -306,13 +281,14 @@ public class SubstitutionCipher {
         SubstitutionCipher subCipher1 = new SubstitutionCipher(latinAlphabet, substitutionAlphabet);
 
         Scanner scanner = new Scanner(System.in);
-        String userTextToEncrypt = subCipher1.promptUserText(scanner);
 
-        String userCipherOrDecipher = subCipher1.promptUserAction(scanner);
+        String userTextToEncrypt = (String) subCipher1.promptUser(scanner, EntryType.TEXT);
 
-        int userCipherIterations = subCipher1.promptUserIterations(scanner);
+        String userCipherOrDecipher = (String) subCipher1.promptUser(scanner, EntryType.ACTION);
 
-        subCipher1.substitutionAlphabet = subCipher1.promptUserAlphabet(scanner);
+        int userCipherIterations = (int) subCipher1.promptUser(scanner, EntryType.ITERATION);
+
+        subCipher1.substitutionAlphabet = (String) subCipher1.promptUser(scanner, EntryType.ALPHABET);
 
         String alphabet = "";
         String subAlphabet = "";
