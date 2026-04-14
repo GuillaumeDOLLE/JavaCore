@@ -81,17 +81,13 @@ public class SubCipher {
 
         Scanner scanner = new Scanner(System.in);
 
-        PromptConfig<String> configText = new PromptFactory().createPromptText();
-        String userTextToEncrypt = PromptService.promptService(scanner, configText);
+        String userTextToEncrypt = PromptService.prompt(scanner, PromptFactory.createPrompt(PromptConfig.EntryType.TEXT));
 
-        PromptConfig<String> configAction = new PromptFactory().createPromptAction();
-        String userCipherOrDecipher = PromptService.promptService(scanner, configAction);;
+        String userCipherOrDecipher = PromptService.prompt(scanner, PromptFactory.createPrompt(PromptConfig.EntryType.ACTION));
 
-        PromptConfig<Integer> configIteration = new PromptFactory().createPromptIteration();
-        int userCipherIterations = PromptService.promptService(scanner, configIteration);
+        int userCipherIterations = PromptService.prompt(scanner, PromptFactory.createPrompt(PromptConfig.EntryType.ITERATION));
 
-        PromptConfig<String> configAlphabet = new PromptFactory().createPromptAlphabet();
-        subCipher1.substitutionAlphabet = PromptService.promptService(scanner, configAlphabet);
+        subCipher1.substitutionAlphabet = PromptService.prompt(scanner, PromptFactory.createPrompt(PromptConfig.EntryType.ALPHABET));
 
         String alphabet = "";
         String subAlphabet = "";

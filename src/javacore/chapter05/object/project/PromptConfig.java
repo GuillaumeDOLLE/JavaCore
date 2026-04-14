@@ -19,9 +19,14 @@ public abstract class PromptConfig<T> {
 
     public abstract T readValue(Scanner scanner);
     public abstract boolean isValid(T value);
-    public boolean hasDefaultValue() {
-        return false;
-    };
+    public final boolean hasDefaultValue() {
+        try {
+            getDefaultValue();
+        } catch (IllegalStateException err) {
+            return false;
+        }
+        return true;
+    }
     public T getDefaultValue() {
         throw new IllegalStateException("Aucune valeur par défaut pour ce type");
     };
@@ -100,10 +105,6 @@ public abstract class PromptConfig<T> {
         }
 
         @Override
-        public boolean hasDefaultValue() {
-            return true;
-        }
-
         public Integer getDefaultValue() {
             return 1;
         }
@@ -142,6 +143,13 @@ public abstract class PromptConfig<T> {
             return true;
         }
 
+    }
+
+    public enum EntryType {
+        TEXT,
+        ACTION,
+        ITERATION,
+        ALPHABET
     }
     
 }

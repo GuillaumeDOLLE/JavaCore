@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class PromptService {
 
-    public static <T> T promptService(Scanner scan, PromptConfig<T> config) {
+    public static <T> T prompt(Scanner scan, PromptConfig<T> config) {
         System.out.println(config.startMessage);
 
         int attempts = 1;
