@@ -29,30 +29,6 @@ public class ProductSorting {
         return "Product { Name : " + this.name + " | Category : " + this.category + " | Price = " + this.price + this.currency + " }";
     }
 
-    public static ProductSorting[] convertToUsdPricesArray(ProductSorting[] productArray) {
-        for (ProductSorting product : productArray) {
-            switch (product.currency) {
-                case '€':
-                    product.price = convertToUsd(product.price, EURO_RATE_TO_USD);
-                    product.currency = '$';
-                    break;
-                case '£':
-                    product.price = convertToUsd(product.price, POUND_RATE_TO_USD);
-                    product.currency = '$';
-                    break;
-                case '¥':
-                    product.price = convertToUsd(product.price, YUAN_RATE_TO_USD);
-                    product.currency = '$';
-                    break;
-                default:
-                    break;
-            }
-
-        }
-
-        return productArray;
-    }
-
     public static void main(String[] args) {
 
         ProductSorting[] productArray = generateFakeProductList();
@@ -65,6 +41,25 @@ public class ProductSorting {
         ProductSorting[] dollarsPricedSortedArray = insertionSorting(tempSortedDollarsPricedProductArray);
 
         System.out.println(Arrays.toString(dollarsPricedSortedArray));
+
+    }
+
+    public static ProductSorting[] generateFakeProductList() {
+
+        ProductSorting[] productArray = new ProductSorting[10];
+
+        productArray[0] = new ProductSorting("Samsung G9", "Gaming Screen", 1499.99, '$');
+        productArray[1] = new ProductSorting("Porsche 911", "Car", 120000, '€');
+        productArray[2] = new ProductSorting("IKEA Sofa", "Seating", 599.99, '£');
+        productArray[3] = new ProductSorting("MacBook Pro M3", "Laptop", 2499.99, '$');
+        productArray[4] = new ProductSorting("Rolex Submariner", "Watch", 9500, '€');
+        productArray[5] = new ProductSorting("Bose QuietComfort 45", "Headphones", 329.99, '$');
+        productArray[6] = new ProductSorting("Dyson V15 Detect", "Vacuum Cleaner", 7390.10, '¥');
+        productArray[7] = new ProductSorting("Harley-Davidson Fat Boy", "Motorcycle", 20300, '€');
+        productArray[8] = new ProductSorting("Canon EOS R5", "Camera", 3899, '$');
+        productArray[9] = new ProductSorting("Lego Millennium Falcon", "Toy", 849.99, '$');
+
+        return productArray;
 
     }
 
@@ -91,23 +86,28 @@ public class ProductSorting {
         return price / rate;
     }
 
-    public static ProductSorting[] generateFakeProductList() {
+    public static ProductSorting[] convertToUsdPricesArray(ProductSorting[] productArray) {
+        for (ProductSorting product : productArray) {
+            switch (product.currency) {
+                case '€':
+                    product.price = convertToUsd(product.price, EURO_RATE_TO_USD);
+                    product.currency = '$';
+                    break;
+                case '£':
+                    product.price = convertToUsd(product.price, POUND_RATE_TO_USD);
+                    product.currency = '$';
+                    break;
+                case '¥':
+                    product.price = convertToUsd(product.price, YUAN_RATE_TO_USD);
+                    product.currency = '$';
+                    break;
+                default:
+                    break;
+            }
 
-        ProductSorting[] productArray = new ProductSorting[10];
-
-        productArray[0] = new ProductSorting("Samsung G9", "Gaming Screen", 1499.99, '$');
-        productArray[1] = new ProductSorting("Porsche 911", "Car", 120000, '€');
-        productArray[2] = new ProductSorting("IKEA Sofa", "Seating", 599.99, '£');
-        productArray[3] = new ProductSorting("MacBook Pro M3", "Laptop", 2499.99, '$');
-        productArray[4] = new ProductSorting("Rolex Submariner", "Watch", 9500, '€');
-        productArray[5] = new ProductSorting("Bose QuietComfort 45", "Headphones", 329.99, '$');
-        productArray[6] = new ProductSorting("Dyson V15 Detect", "Vacuum Cleaner", 7390.10, '¥');
-        productArray[7] = new ProductSorting("Harley-Davidson Fat Boy", "Motorcycle", 20300, '€');
-        productArray[8] = new ProductSorting("Canon EOS R5", "Camera", 3899, '$');
-        productArray[9] = new ProductSorting("Lego Millennium Falcon", "Toy", 849.99, '$');
+        }
 
         return productArray;
-
     }
 
 }
