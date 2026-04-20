@@ -7,7 +7,7 @@ public class BinaryConverter {
     public static void main(String[] args) {
 
         String binaryText = "10110110";
-        long result = 0;
+        int result = 0;
         int index = 0;
         for (int indexToPow = binaryText.length() - 1; indexToPow > 0; indexToPow--) {
             char c = binaryText.charAt(index);
