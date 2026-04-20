@@ -6,13 +6,15 @@ public class BinaryConverter {
 
     public static void main(String[] args) {
 
-        String binaryText = "10110110";
-        int result = 0;
+        String binaryText = "1011001010110111101011001001011010101001011111010111001010101101";
+        BigInteger result = BigInteger.valueOf(0);
         int index = 0;
-        for (int indexToPow = binaryText.length() - 1; indexToPow > 0; indexToPow--) {
+        for (int indexToPow = binaryText.length() - 1; indexToPow >= 0; indexToPow--) {
             char c = binaryText.charAt(index);
-            double n = Integer.parseInt(String.valueOf(c));
-            result += (int) (n * Math.pow(2, indexToPow));
+
+            BigInteger n = BigInteger.valueOf(Integer.parseInt(String.valueOf(c)));
+
+            result = result.add(n.multiply(BigInteger.valueOf(2).pow(indexToPow)));
             index++;
         }
 
@@ -20,8 +22,11 @@ public class BinaryConverter {
 
 
         // 3. Je vérifie grâce à un convertisseur avec une recherche internet, ou alors je peux utiliser la méthode interdite pour vérifier.
-        int checkedResult = Integer.parseInt(binaryText, 2);
-        System.out.println(checkedResult);
+
+        // La méthode interdite ne fonctionne pas avec BigInteger.
+
+        // J'avais un problème de cast (long) sur mon Math.pow qui me retirait 1 sur mon result car je dépassais la valeur maximale d'un nombre long
+        // J'avais aussi indexToPow > 0 et non pas égal donc je perdais 1 sur le dernier bit.
 
     }
 
