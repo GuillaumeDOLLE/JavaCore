@@ -21,17 +21,18 @@ public class MysteryNumberGame {
         do {
             attempts++;
             result = readValue(scanner);
-            if (isValid(result)) {
+            if (isValidNumber(result)) {
                 if (result < number) {
-                    System.out.println("C'est plus grand !\nIl vous reste " + (LIMIT_ATTEMPTS - attempts) + " tentatives.");
+                    System.out.println("C'est plus grand !");
                 }
                 else if (result > number) {
-                    System.out.println("C'est plus petit !\nIl vous reste " + (LIMIT_ATTEMPTS - attempts) + " tentatives.");
+                    System.out.println("C'est plus petit !");
                 }
                 else {
                     System.out.println("C'est le bon nombre, GG !");
                     break;
                 }
+                System.out.println("Il vous reste " + (LIMIT_ATTEMPTS - attempts) + " tentatives.");
             }
 
         } while (attempts < LIMIT_ATTEMPTS);
@@ -48,8 +49,11 @@ public class MysteryNumberGame {
         }
     }
 
-    public static boolean isValid(Integer value) {
-        return value != null && value >= 0 && value < 101;
+    public static boolean isValidNumber(Integer value) {
+        return value != null && value >= 0 && value <= 100;
     }
+
+
+    // ChatGPT bug mais je crois que si on divise toujours la poire en 2, en 7 tentatives on finit toujours par trouver le bon nombre à force de diviser.
 
 }

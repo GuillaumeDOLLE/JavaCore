@@ -9,7 +9,7 @@ public class BinaryConverter {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Veuillez entrer un nombre binaire (composé uniquement de 0 et de 1, ayant maximum 64 bits) :");
         String binaryTextEntry = scanner.nextLine();
-        if (isValid(binaryTextEntry)) {
+        if (isValidBinary(binaryTextEntry)) {
             BigInteger result = convertBinaryToDecimal(binaryTextEntry);
 
             System.out.println("binaryText (" + binaryTextEntry + ") in decimal is equal to : " + result);
@@ -29,7 +29,7 @@ public class BinaryConverter {
 
     }
 
-    public static boolean isValid(String userBinaryTextEntry) {
+    public static boolean isValidBinary(String userBinaryTextEntry) {
         return userBinaryTextEntry.matches("[0-1]{1,64}");
     }
 
